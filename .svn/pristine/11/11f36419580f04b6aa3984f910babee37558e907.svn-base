@@ -1,0 +1,206 @@
+<?php
+    require 'required.php';
+
+    //onglet actif
+    $activeTab = "index";
+
+    //on récupére les stats du joueur
+    $am = new PdoApiKeyManager();
+    if (isset($_POST['season']))
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],$_POST['season']);
+      $numberSeason = $_POST['season'];
+    }
+    else if (isset($_GET['season']))
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],$_GET['season']);
+      $numberSeason = $_GET['season'];
+    }
+    else
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],4);
+      $numberSeason = 2015;
+    }
+
+    $player = $am->getNamePlayerById($_GET['id']);
+    $champs = $am->getChamps()->data; 
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Projet LOL</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
+
+   <script type="text/javascript">
+
+      function getStatsPlayer(season)
+      {
+       //on va mettre a jour le bouton actif
+       $('#2013').removeClass('active');
+       $('#2014').removeClass('active');
+       $('#2015').removeClass('active');
+       $('#'+season).toggleClass('active');
+       if (season == 2013) { season = 3};
+       //affichage du chargement
+       $('#contenu_stats').html("<br /><br /><div style='text-align: center;'><img src='/ProjetLOL/Source/images/loader.gif' alt='chargement...'/></div>")
+       //$('#contenu_stats').css("background-image", "url(/ProjetLOL/Source/images/loader.gif)"); 
+       
+       //requête ajax, appel du fichier _returnNumberKeysAvailables.php
+       $.ajax(
+       {
+        type: "GET",
+        url: "ajax/_returnStatsPlayerBySeason.php?idJoueur="+<?php echo $_GET['id']; ?>+"&season="+season,
+        dataType : "html",
+        //affichage de l'erreur en cas de problème
+        error:function(msg, string)
+        {
+          alert( "Error !: " + string );
+        },
+        success:function(data)
+        {
+          //on met à jour la div contenu_stats avec les données reçus
+          //on vide la div et on le cache
+          $("#contenu_stats").empty().hide();
+          //on affecte les resultats au div
+          $("#contenu_stats").append(data);
+          //on affiche les resultats avec la transition
+          $('#contenu_stats').fadeIn(800);
+        }
+       });
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <?php include("includes/header.php"); ?>
+
+       <div class="jumbotron" style="width:1200px;overflow : hidden;;">
+        <div id="affichage">
+          <?php echo "<form action='test.php' method='post'>"; ?>
+            <div class="btn-group" data-toggle="buttons" style="float:right;">
+              <?php if ($numberSeason == 3) { ?>
+                <label id="2013" class="btn btn-info active">
+                  <input name="season" id="2013" value="3" type="radio" onChange="getStatsPlayer(2013)">2013
+                </label>
+              <?php } else { ?>
+                <label id="2013" class="btn btn-info">
+                  <input name="season" id="2013" value="3" type="radio" onChange="getStatsPlayer(2013)">2013
+                </label>
+              <?php } ?>
+              <?php if ($numberSeason == 2014) { ?>
+                <label id="2014" class="btn btn-info active">
+                  <input name="season" id="2014" value="2014" type="radio" onChange="getStatsPlayer(2014)">2014
+                </label>
+              <?php } else { ?>
+                <label id="2014" class="btn btn-info">
+                  <input name="season" id="2014" value="2014" type="radio" onChange="getStatsPlayer(2014)">2014
+                </label>
+              <?php } ?>
+              <?php if ($numberSeason == 2015) { ?>
+                <label id="2015" class="btn btn-info active">
+                  <input name="season" id="2015" value="2015" type="radio" onChange="getStatsPlayer(2015)">2015
+                </label>
+              <?php } else { ?>
+                <label id="2015" class="btn btn-info">
+                  <input name="season" id="2015" value="2015" type="radio" onChange="getStatsPlayer(2015)">2015
+                </label>
+              <?php } ?>
+            </div>
+        </form>
+        </form>
+
+        <div id="NamePlayer" style="float:left;">
+          <?php echo "<img style='opacity:0.5;' src='http://lkimg.zamimg.com/images/v2/summoner/icons/size64x64/" . $player->$_GET['id']->profileIconId . ".png'". "title='Icone'></div>"; ?>
+          <?php echo "<h2>".$player->$_GET['id']->name."</h1>"; ?>       
+        </div>
+
+        <div id="contenu_stats" style='clear:both;'>
+
+          <?php 
+          $totalWin = 0;
+          $totalLost = 0;
+          $totalGame = 0;
+
+          if ($statsJoueur != null)
+          {
+            foreach($statsJoueur->champions as $champPlayer):
+              if ($champPlayer->id != 0)
+              {
+                $totalWin = $totalWin + $champPlayer->stats->totalSessionsWon;
+                $totalLost = $totalLost + $champPlayer->stats->totalSessionsLost;
+                $totalGame = $totalGame + $champPlayer->stats->totalSessionsWon + $champPlayer->stats->totalSessionsLost;
+              }
+                                 
+            endforeach; ?>
+
+            <br /><br />
+            <div id="titleStats" style="text-align: center;">
+                <?php echo number_format(($totalWin / ($totalWin + $totalLost)) * 100,0) . "%</b> de victoire - <b>" . $totalGame . "</b> ranked"; ?>
+            </div>
+
+            <?php foreach($statsJoueur->champions as $champPlayer): ?>
+                  <?php foreach($champs as $champ): ?>
+
+                    <?php if ($champ->id == $champPlayer->id && $champPlayer->id != 0) { ?>
+                    <?php //var_dump(preg_replace('/\s/', '', $champ->name)); ?>
+
+                    <!-- traitement des noms de champion particulier -->
+                    <?php $champName =  preg_replace('/\s/', '', $champ->name); ?>
+                    <?php if ($champName=="LeBlanc")$champName="Leblanc"; ?>
+                    <?php if ($champName=="Dr.Mundo")$champName="DrMundo"; ?>
+                    <?php if ($champName=="Wukong")$champName="MonkeyKing"; ?>
+                    <?php if ($champName=="Kha'Zix")$champName="Khazix"; ?>
+                    <?php if ($champName=="Cho'Gath")$champName="Chogath"; ?>
+                    <?php if ($champName=="Fiddlesticks")$champName="FiddleSticks"; ?>
+                    <?php if ($champName=="Rek'Sai")$champName="RekSai"; ?>
+                    <?php if ($champName=="Kog'Maw")$champName="KogMaw"; ?>
+                    <?php if ($champName=="Vel'Koz")$champName="Velkoz"; ?>
+
+                      <div id="caseChamp">
+                        <?php echo "<div id='imageChamp'><img style='opacity:0.5;' src='http://ddragon.leagueoflegends.com/cdn/5.15.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>"; ?>
+                        <center><div id="ratioChamp"><?php echo number_format((($champPlayer->stats->totalSessionsWon / ($champPlayer->stats->totalSessionsWon + $champPlayer->stats->totalSessionsLost) * 100)),0) . "%"; ?></div></center>
+                        <div id="winChamp"><?php echo $champPlayer->stats->totalSessionsWon ?></div>
+                        <div id="lossChamp"><?php echo $champPlayer->stats->totalSessionsLost ?></div>
+                      </div>
+                    <?php } ?>
+              
+                  <?php endforeach; ?>
+
+            <?php endforeach; ?>
+
+          <?php }else{ ?>
+            Aucune données pour cette saison
+
+         <?php } ?>
+
+      </div>
+       
+    </div>
+    <?php include("includes/footer.php"); ?>
+    </div> 
+
+  </div>
+
+  
+
+  </body>
+</html>

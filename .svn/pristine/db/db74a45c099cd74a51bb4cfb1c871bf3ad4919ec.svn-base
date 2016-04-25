@@ -1,0 +1,9 @@
+<?php
+
+require_once "classes/models/ApiKey.class.php";
+
+require_once "classes/manager/ManagerFactory.class.php";
+
+session_start();
+
+?>

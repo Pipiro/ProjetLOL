@@ -1,0 +1,52 @@
+<?php 
+
+  $am = new PdoApiKeyManager();
+  $numberKeyAvailable = $am->getNumberKeysAvailable();
+
+//securite
+//if (!isset($activeTab))header('Location: ../index.php'); 
+?>
+
+<script type="text/javascript">
+      $(document).ready(function() 
+      {
+        function getNumberKey()
+        {
+          //requête ajax, appel du fichier _returnNumberKeysAvailables.php
+          $.ajax(
+          {
+            type: "GET",
+            url: "ajax/_returnNumberKeysAvailables.php",
+            dataType : "html",
+            //affichage de l'erreur en cas de problème
+            error:function(msg, string)
+            {
+            alert( "Error !: " + string );
+            },
+            success:function(data)
+            {
+            //on met à jour la div number_keys_available avec les données reçus
+            //on vide la div et on le cache
+            $("#number_keys_available").empty().hide();
+            //on affecte les resultats au div
+            $("#number_keys_available").append(data);
+            //on affiche les resultats avec la transition
+            $('#number_keys_available').fadeIn(2000);
+            }
+          });
+        }
+        setInterval(getNumberKey, 5000)
+      })
+
+    </script>
+
+
+<div class="row marketing" style="margin-left: 1px;">
+  <?php if ($numberKeyAvailable == 7)  { ?>
+    <button class="btn btn-success">Clées disponibles <span class="badge text-success" id="number_keys_available"><?php echo $numberKeyAvailable; ?></span></button>
+  <?php } else if ($numberKeyAvailable > 3) { ?>
+    <button class="btn btn-info">Clées disponibles <span class="badge text-success" id="number_keys_available"><?php echo $numberKeyAvailable; ?></span></button>
+  <?php } else  { ?>
+    <button class="btn btn-danger">Clées disponibles <span class="badge text-success" id="number_keys_available"><?php echo $numberKeyAvailable; ?></span></button>
+  <?php } ?>
+</div>

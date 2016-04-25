@@ -1,0 +1,146 @@
+<?php
+    require 'required.php';
+
+    //on récupére les stats du joueur
+    $am = new PdoApiKeyManager();
+    if (isset($_POST['season']))
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],$_POST['season']);
+      $numberSeason = $_POST['season'];
+    }
+    else if (isset($_GET['season']))
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],$_GET['season']);
+      $numberSeason = $_GET['season'];
+    }
+    else
+    {
+      $statsJoueur = $am->getStatsByIdPlayer($_GET['id'],4);
+      $numberSeason = 4;
+    }
+
+    $player = $am->getNamePlayerById($_GET['id']);
+    $champs = $am->getChamps()->data; 
+
+?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Incredible Geeks</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="style.css" rel="stylesheet" type="text/css" />
+
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right">
+          <li class="active"><a href="index.php">Membres</a></li>
+          <li><a href="team.php">Team</a></li>
+          <li><a href="statistiques.php">Statistiques</a></li>
+          <li style="margin-top:6px;margin-left:50px;margin-right:-50px;">
+            <form action="searchPlayer.php" method="get">
+              <input type="text" name="pseudo" value="Pseudo" onclick="this.value='';" style="vertical-align: middle;">
+              <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+          </li>
+        </ul>
+        <h3 class="text-muted">Incredible Geeks</h3>
+      </div>
+      <br />
+
+      <div class="jumbotron" style="width:1200px;overflow : hidden;;">
+        <div id="affichage">
+          <div id="selectSeason" style="float:right;">
+          <?php echo "<form action='statsPlayer.php?id=" .  $_GET['id'] . "' method='post'>"; ?>
+              <select name="season" onChange="submit()">
+                <?php if ($numberSeason == 3) { ?>
+                <option selected="selected" value="3">Saison 2013</option>
+                <?php } else { ?>
+                <option value="3">Saison 2013</option>
+                <?php } ?>
+                <?php if ($numberSeason == 2014) { ?>
+                <option selected="selected" value="2014">Saison 2014</option>
+                <?php } else { ?>
+                <option value="2014">Saison 2014</option>
+                <?php } ?>
+                 <?php if ($numberSeason == 2015) { ?>
+                <option selected="selected" value="2015">Saison 2015</option>
+                <?php } else { ?>
+                <option value="2015">Saison 2015</option>
+                <?php } ?>
+              </select>
+          </form>
+        </div>
+
+          <?php 
+          $totalWin = 0;
+          $totalLost = 0;
+          $totalGame = 0;
+
+          foreach($statsJoueur->champions as $champPlayer):
+            if ($champPlayer->id != 0)
+            {
+              $totalWin = $totalWin + $champPlayer->stats->totalSessionsWon;
+              $totalLost = $totalLost + $champPlayer->stats->totalSessionsLost;
+              $totalGame = $totalGame + $champPlayer->stats->totalSessionsWon + $champPlayer->stats->totalSessionsLost;
+            }
+                               
+          endforeach; ?>
+
+          <center><div id="titleStats">
+              <?php echo $player->$_GET['id']->name . "<br /><b>" . number_format(($totalWin / ($totalWin + $totalLost)) * 100,0) . "%</b> de victoire - <b>" . $totalGame . "</b> ranked"; ?>
+          </div></center>
+
+          <?php foreach($statsJoueur->champions as $champPlayer): ?>
+                <?php foreach($champs as $champ): ?>
+
+                  <?php if ($champ->id == $champPlayer->id && $champPlayer->id != 0) { ?>
+                  <?php //var_dump(preg_replace('/\s/', '', $champ->name)); ?>
+
+                  <!-- traitement des noms de champion particulier -->
+                  <?php $champName =  preg_replace('/\s/', '', $champ->name); ?>
+                  <?php if ($champName=="LeBlanc")$champName="Leblanc"; ?>
+                  <?php if ($champName=="Dr.Mundo")$champName="DrMundo"; ?>
+                  <?php if ($champName=="Wukong")$champName="MonkeyKing"; ?>
+                  <?php if ($champName=="Kha'Zix")$champName="Khazix"; ?>
+                  <?php if ($champName=="Cho'Gath")$champName="Chogath"; ?>
+                  <?php if ($champName=="Fiddlesticks")$champName="FiddleSticks"; ?>
+                  <?php if ($champName=="Rek'Sai")$champName="RekSai"; ?>
+
+                    <div id="caseChamp">
+                      <?php echo "<div id='imageChamp'><img style='opacity:0.5;' src='http://ddragon.leagueoflegends.com/cdn/5.15.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>"; ?>
+                      <center><div id="ratioChamp"><?php echo number_format((($champPlayer->stats->totalSessionsWon / ($champPlayer->stats->totalSessionsWon + $champPlayer->stats->totalSessionsLost) * 100)),0) . "%"; ?></div></center>
+                      <div id="winChamp"><?php echo $champPlayer->stats->totalSessionsWon ?></div>
+                      <div id="lossChamp"><?php echo $champPlayer->stats->totalSessionsLost ?></div>
+                    </div>
+                  <?php } ?>
+            
+                <?php endforeach; ?>
+
+          <?php endforeach; ?>
+       
+        </div>
+
+    </div> 
+  </div>
+
+
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="jquery/script_deplacement.js"></script>
+
+  </body>
+</html>

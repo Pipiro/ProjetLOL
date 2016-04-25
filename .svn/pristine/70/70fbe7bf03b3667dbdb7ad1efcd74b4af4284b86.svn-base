@@ -1,0 +1,7 @@
+<?php
+
+require_once 'classes/manager/ApiKeyManager.class.php';
+
+require_once 'classes/manager/pdo/PdoApiKeyManager.class.php';
+
+?>

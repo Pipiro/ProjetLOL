@@ -1,0 +1,20 @@
+- correction bugs et amélioration code
+- gestion des erreurs api
+- affichage d'un compteur sur la page d'accueil qui se met à jours automatiquement
+- mise en place d'ajax pour les données du joueur
+- classement des données du joueur
+- gestion des joueurs sur la page d'accueil
+- mise en place d'ajax pour la gestions des joueurs sur la page d'accueil
+- mise en forme sympas des données du joueur avec jquery
+- gestions des recherches en bdd (premier temps)
+- gestion des recherches en cache (second temps)
+
+
+
+
+
+
+liens :
+- https://openclassrooms.com/courses/prenez-en-main-bootstrap/elements-de-base (tuto bootstrap)
+- http://pausecafe.fdev-creation.com/jquery-ajax-rechargement-dune-partie-dune-page/ (test ajax)
+- https://openclassrooms.com/forum/sujet/code-ajax-qui-reload-une-div-toute-les-1-secondes (ajax toutes les X secondes)

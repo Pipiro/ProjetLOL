@@ -1,0 +1,52 @@
+<?php 
+
+  $am = new PdoApiKeyManager();
+  $numberKeyAvailable = $am->getNumberKeysAvailable();
+
+//securite
+//if (!isset($activeTab))header('Location: ../index.php'); 
+?>
+
+<script type="text/javascript">
+      $(document).ready(function() 
+      {
+        //au click sur le lien chercher
+        function getNumberKey()
+        {
+          //requête ajax, appel du fichier recherche.php
+          $.ajax(
+          {
+            type: "GET",
+            url: "ajax/_returnNumberKeysAvailables.php",
+            dataType : "html",
+            //affichage de l'erreur en cas de problème
+            error:function(msg, string)
+            {
+            alert( "Error !: " + string );
+            },
+            success:function(data)
+            {
+            //on met à jour le div zone_de_rechargement avec les données reçus
+            //on vide la div et on le cache
+            $("#zone_de_rechargement").empty().hide();
+            //on affecte les resultats au div
+            $("#zone_de_rechargement").append(data);
+            //on affiche les resultats avec la transition
+            $('#zone_de_rechargement').fadeIn(2000);
+            }
+          });
+        }
+        setInterval(getNumberKey, 5000)
+      })
+
+    </script>
+
+
+<div class="row marketing">
+        <div class="col-lg-6">
+        </div>
+
+        <div class="col-lg-6">
+            Clées disponibles : <a id="zone_de_rechargement"><?php echo $numberKeyAvailable; ?></a>
+        </div>
+</div>
