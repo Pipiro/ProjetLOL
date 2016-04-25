@@ -16,9 +16,9 @@ if (!isset($activeTab))header('Location: ../index.php');
       <li><a href="team.php">Team</a></li>
       <?php } ?>
       <?php if ($activeTab == "statistiques") { ?>
-      <li class="active"><a href="statistiques.php">statistiques</a></li>
+      <li class="active"><a href="statistiques.php">Statistiques</a></li>
       <?php } else { ?>
-      <li><a href="statistiques.php">statistiques</a></li>
+      <li><a href="statistiques.php">Statistiques</a></li>
       <?php } ?>
       <li style="margin-top:6px;margin-left:50px;margin-right:-50px;">
           <form action="searchPlayer.php" method="get">

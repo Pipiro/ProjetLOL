@@ -2,7 +2,7 @@
     require 'required.php';
 
     //onglet actif
-    $activeTab = "index";
+    $activeTab = "team";
 
     //on récupére les stats ranked et summary du joueur
     $am = new PdoApiKeyManager();
@@ -59,7 +59,7 @@
 
     <!-- inclusion jquery -->
     <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
-    <script type="text/javascript" src="jquery/jquery-ui-1.11.4.js"></script>
+    <!-- <script type="text/javascript" src="jquery/jquery-ui-1.11.4.js"></script> -->
 
     <!-- incluion highcharts -->
     <script src="http://code.highcharts.com/highcharts.js"></script>
@@ -86,7 +86,7 @@
        if (season == 2013) { season = 3};
        
        //affichage du chargement
-       $('#contenu_stats').html("<br /><br /><div style='text-align: center;'><img src='/ProjetLOL/Source/images/loader.gif' alt='chargement...'/></div>")
+       $('#contenu_stats').html("<br /><br /><div style='text-align: center;'><img src='images/loader.gif' alt='chargement...'/></div>")
 
        //on remet le compteur de victoire a 0
        var chart = $('#container_victoire').highcharts(),point;
@@ -122,6 +122,15 @@
        $("#input_TOUS").attr("onChange", "updateSeason('TOUS');getStatsPlayer("+season+",'TOUS')");
        $("#input_RANKED_SOLO").attr("onChange", "updateSeason('RANKED_SOLO');getStatsPlayer("+season+",'RANKED_SOLO')");
        $("#input_RANKED_TEAM_5V5").attr("onChange", "updateSeason('RANKED_TEAM_5V5');getStatsPlayer("+season+",'RANKED_TEAM_5V5')");
+       // gestion de la particularité des team ranked lors de la saison 2016
+       if (season != 2016)
+       {
+           $("#RANKED_TEAM_5V5").removeClass('disabled');
+       }
+        else
+       {
+          $("#RANKED_TEAM_5V5").toggleClass('disabled');
+       }
       }
 
       function updateSeason(mode)
@@ -204,12 +213,16 @@
                     <input name="mode" id="input_RANKED_SOLO" value="RANKED_SOLO" type="radio" onChange="updateSeason('RANKED_SOLO');getStatsPlayer(<?php echo $numberSeason; ?>, 'RANKED_SOLO')">Ranked Solo
                   </label>
                 <?php } ?>
-                <?php if ($modeName == "RANKED_TEAM_5V5") { ?>
+                <?php if ($modeName == "RANKED_TEAM_5V5" && $numberSeason != 2016) { ?>
                   <label id="RANKED_TEAM_5V5" class="btn btn-info active">
                     <input name="mode" id="input_RANKED_TEAM_5V5" value="RANKED_TEAM_5V5" type="radio" onChange="updateSeason('RANKED_TEAM_5V5');getStatsPlayer(<?php echo $numberSeason; ?>, 'RANKED_TEAM_5V5')">Ranked Team 5v5
                   </label>
-                <?php } else { ?>
+                <?php } else if ( $numberSeason != 2016) { ?>
                   <label id="RANKED_TEAM_5V5" class="btn btn-info">
+                    <input name="mode" id="input_RANKED_TEAM_5V5" value="RANKED_TEAM_5V5" type="radio" onChange="updateSeason('RANKED_TEAM_5V5');getStatsPlayer(<?php echo $numberSeason; ?>, 'RANKED_TEAM_5V5')">Ranked Team 5v5
+                  </label>
+                <?php } else if ( $numberSeason == 2016) { ?>
+                  <label id="RANKED_TEAM_5V5" class="btn btn-info disabled">
                     <input name="mode" id="input_RANKED_TEAM_5V5" value="RANKED_TEAM_5V5" type="radio" onChange="updateSeason('RANKED_TEAM_5V5');getStatsPlayer(<?php echo $numberSeason; ?>, 'RANKED_TEAM_5V5')">Ranked Team 5v5
                   </label>
                 <?php } ?>
@@ -279,7 +292,7 @@
                       <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $numberSeason; ?> en mode Ranked Solo.
                   </div>
               <?php }
-              if (($modeName == "RANKED_TEAM_5V5" || $modeName == "TOUS") && $statsRankedTeam == false)
+              if (($modeName == "RANKED_TEAM_5V5" || $modeName == "TOUS") && $statsRankedTeam == false && $numberSeason != 2016)
               { ?>
                   <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
                       <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $numberSeason; ?> en mode Ranked Team 5v5.

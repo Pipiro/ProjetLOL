@@ -42,7 +42,7 @@
       <div class="jumbotron" style="width:1200px;height:800px;">
         <div id="affichage">
 
-         <center><img src="http://gay-nerds.com/site/wp-content/uploads/2011/07/gragas.jpg"></center>
+         <center><img src="http://esports.inquirer.net/wp-content/uploads/2014/11/servermain.jpg"></center>
        
         </div>
     </div>

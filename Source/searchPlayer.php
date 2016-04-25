@@ -2,7 +2,7 @@
     require 'required.php';
 
     //onglet actif
-    $activeTab = "index";
+    $activeTab = "";
 
     $playerId = 0;
     //on récupére les stats du joueur
@@ -73,7 +73,7 @@
 
         <?php if ($playerProp != null) { ?>
           <?php $ranked = false; ?>
-          <?php if ($leaguePlayer != null) { ?>
+          <?php if (!isset($leaguePlayer->status)) { ?>
           <!-- on prend le premier élément du tableau -->
             <?php foreach(current($leaguePlayer) as $league): ?>
               <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
@@ -88,7 +88,7 @@
 
                       <?php $ranked = true; ?>
 
-                      <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2015'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
+                      <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2016'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
 
                       <!-- on parse la ligue pour récupérer l'image  -->
                       <?php $imageLeagueLien = "http://lkimg.zamimg.com/images/medals/" . $tierLower . " " . $entry->division . ".png";
@@ -119,11 +119,6 @@
                       }
 
                     } ?>
-                    <!-- ne fonctionne plus avec API -->
-                      <?php /*if ($entry->lastPlayed != -1)
-                      {
-                        echo '<br />'.date('d/m/Y', substr($entry->lastPlayed,0,-3)).' '.date('H:i:s', substr($entry->lastPlayed,0,-3)); 
-                      }*/?>
 
                   <?php endif ?>
                 <?php endforeach; ?>

@@ -24,6 +24,18 @@ class PdoPlayersManager extends AbstractPdoManager
         
 	}
 
+	public function getIdLolByNamePlayer($name)
+	{
+		$query = $this->pdo->prepare("SELECT idLol FROM players WHERE name='$name'");
+		$query->execute();
+		
+		$result = $query->fetch(PDO::FETCH_OBJ);
+		
+		$query->closeCursor();
+
+		return $result->idLol;
+	}
+
 	
 }
 ?>

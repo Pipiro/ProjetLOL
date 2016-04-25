@@ -1,6 +1,5 @@
 - correction bugs et amélioration code
 - gestion des erreurs api
-- affichage d'un compteur sur la page d'accueil qui se met à jours automatiquement
 - mise en place d'ajax pour les données du joueur
 - classement des données du joueur
 - gestion des joueurs sur la page d'accueil
@@ -12,7 +11,8 @@
 
 
 
-
+Done
+- affichage d'un compteur sur la page d'accueil qui se met à jours automatiquement
 
 
 liens :
