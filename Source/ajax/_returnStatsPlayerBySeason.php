@@ -5,12 +5,10 @@
 
     $statsJoueurRanked = $am->getStatsRankedByIdPlayer($_GET['idJoueur'],$_GET['season']);
     $statsJoueurSummary = $am->getStatsSummaryByIdPlayer($_GET['idJoueur'],$_GET['season']);
-    $player = $am->getNamePlayerById($_GET['idJoueur']);
-    $champs = $am->getChamps()->data;
+    $player = $am->getPlayerById($_GET['idJoueur']);
+    $champs = $am->getChamps()->data; ?>
 
-    //var_dump($statsJoueurRanked);
-    //var_dump($statsJoueurSummary);
-
+    <?php
     if (isset($statsJoueurSummary->playerStatSummaries))
     {
         //recuperation des victoires et des defaites selon le mode de jeu
@@ -61,7 +59,7 @@
                 <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $_GET['season']; ?> en mode Ranked Solo.
             </div>
         <?php }
-        if (($_GET['mode'] == "RANKED_TEAM_5V5" || $_GET['mode'] == "TOUS") && $statsRankedTeam == false)
+        if (($_GET['mode'] == "RANKED_TEAM_5V5" || $_GET['mode'] == "TOUS") && $statsRankedTeam == false && $_GET['season'] != 2016)
         { ?>
             <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
                 <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $_GET['season']; ?> en mode Ranked Team 5v5.
@@ -73,9 +71,118 @@
 
             <script type="text/javascript">
 
-               var chart = $('#container_victoire').highcharts(),point;
-               point = chart.series[0].points[0];
-               point.update(<?php echo number_format(($totalWin / ($totalGame)) * 100,0); ?>);
+                  $(function () {
+
+                      var gaugeOptions = {
+
+                          chart: {
+                              type: 'solidgauge',
+                              backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                          },
+
+                          title: null,
+
+                          pane: {
+                              center: ['50%', '85%'],
+                              size: '130%',
+                              startAngle: -90,
+                              endAngle: 90,
+                              background: {
+                                  backgroundColor: 'rgba(0,0,0,0)',
+                                  innerRadius: '60%',
+                                  outerRadius: '100%',
+                                  shape: 'arc'
+                              }
+                          },
+
+                          tooltip: {
+                              enabled: false
+                          },
+
+                          // the value axis
+                          yAxis: {
+                              stops: [
+                                  [0, '#DF5353'], // red
+                                  [1, '#55BF3B'] // green
+                              ],
+                              lineWidth: 0,
+                              minorTickInterval: null,
+                              tickPixelInterval: 400,
+                              tickWidth: 0,
+                              title: {
+                                  y: -70
+                              },
+                              labels: {
+                                  y: 16
+                              }
+                          },
+
+                          plotOptions: {
+                              solidgauge: {
+                                  dataLabels: {
+                                      y: 5,
+                                      borderWidth: 0,
+                                      useHTML: true
+                                  }
+                              }
+                          }
+                      };
+
+                      // The speed gauge
+                      $('#container_victoire').highcharts(Highcharts.merge(gaugeOptions, {
+                          yAxis: {
+                              min: 0,
+                              max: 100,
+                              title: {
+                                  text: 'Victoire'
+                              }
+                          },
+
+                          credits: {
+                              enabled: false
+                          },
+
+                          series: [{
+                              name: 'Victoire',
+                              data: [<?php echo number_format(($totalWin / ($totalGame)) * 100,0); ?>],
+                              dataLabels: {
+                                  format: '<div style="text-align:center"><span style="font-size:25px;color:' +
+                                      ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span><br/>' +
+                                         '<span style="font-size:12px;color:silver">%</span></div>'
+                              },
+                              tooltip: {
+                                  valueSuffix: ' %'
+                              }
+                          }]
+
+                      }));
+
+
+                      // Bring life to the dials
+                      /*setInterval(function () {
+                          // Speed
+                          var chart = $('#container-speed').highcharts(),
+                              point,
+                              newVal,
+                              inc;
+
+                          if (chart) {
+                              point = chart.series[0].points[0];
+                              inc = Math.round((Math.random() - 0.5) * 100);
+                              newVal = point.y + inc;
+
+                              if (newVal < 0 || newVal > 100) {
+                                  newVal = point.y - inc;
+                              }
+
+                              point.update(newVal);
+                          }
+                      }, 2000);*/
+
+
+                  });
+
+
 
            </script>
 
@@ -85,7 +192,7 @@
 
         <br /><br />
 
-        <?php if ($statsJoueurRanked != null)
+        <?php if (!isset($statsJoueurRanked->status))
         {
 
             //traitement des donnees des matches classes si la saison est differente de 2013
@@ -165,7 +272,7 @@
                         else if ($champName=="Kog'Maw")$champName="KogMaw";
                         else if ($champName=="Vel'Koz")$champName="Velkoz";
 
-                        echo "<div id='imagePref'><img style='width: 80px; height: 80px;' src='http://ddragon.leagueoflegends.com/cdn/5.15.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>";
+                        echo "<div id='imagePref'><img style='width: 80px; height: 80px;' src='http://ddragon.leagueoflegends.com/cdn/6.8.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>";
                         break;
                     }
                   endforeach;
@@ -195,7 +302,7 @@
                 <?php if ($champName=="Vel'Koz")$champName="Velkoz"; ?>
 
                 <div id="caseChamp">
-                  <?php echo "<div id='imageChamp'><img style='opacity:0.5;' src='http://ddragon.leagueoflegends.com/cdn/5.15.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>"; ?>
+                  <?php echo "<div id='imageChamp'><img style='opacity:0.5;' src='http://ddragon.leagueoflegends.com/cdn/6.8.1/img/champion/" . $champName . ".png'". "title='". $champ->name . "'></div>"; ?>
                   <center><div id="ratioChamp"><?php echo number_format((($champPlayer->stats->totalSessionsWon / ($champPlayer->stats->totalSessionsWon + $champPlayer->stats->totalSessionsLost) * 100)),0) . "%"; ?></div></center>
                   <div id="winChamp"><?php echo $champPlayer->stats->totalSessionsWon ?></div>
                   <div id="lossChamp"><?php echo $champPlayer->stats->totalSessionsLost ?></div>

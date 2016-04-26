@@ -5,8 +5,8 @@ interface ApiKeyManager
 	function getInfoLeagueByIdPlayer($id);
 	function getStatsByIdPlayer($id, $season);
 	function getChamps();
-	function getIdPlayerByName($name);
-	function getNamePlayerById($id);
+	function getPlayerByName($name);
+	function getPlayerById($id);
 	function getKeyByUse();
 	function updateKey($id, $timestamp10s, $number10s, $timestamp10m, $number10m);
 	/*function getAllSaves($date);

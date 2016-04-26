@@ -82,7 +82,7 @@ class PdoApiKeyManager extends AbstractPdoManager
         
 	}
 
-	function getIdPlayerByName($name)
+	function getPlayerByName($name)
 	{
 		$keyAPI = $this->getKeyByUse();
 		if ($keyAPI != null)
@@ -102,7 +102,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	}
 
-	function getNamePlayerById($id)
+	function getPlayerById($id)
 	{
 		$keyAPI = $this->getKeyByUse();
 		if ($keyAPI != null)

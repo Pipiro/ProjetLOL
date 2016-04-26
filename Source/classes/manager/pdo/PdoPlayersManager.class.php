@@ -36,6 +36,13 @@ class PdoPlayersManager extends AbstractPdoManager
 		return $result->idLol;
 	}
 
+	public function addPlayer($name,$idLol)
+	{
+		$query = $this->pdo->prepare("INSERT INTO players (name, idLol, actif) VALUES ('".$name."', '".$idLol."', 1)");
+			
+		$resultat=$query->execute();
+	}
+
 	
 }
 ?>

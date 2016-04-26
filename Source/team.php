@@ -47,9 +47,6 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css" />
 
-    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
-    <script type="text/javascript" src="jquery/script_deplacement.js"></script>
-
   </head>
 
   <body>
@@ -177,6 +174,9 @@
     </div> -->
 
   </div>
+
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
+    <!-- <script type="text/javascript" src="jquery/script_deplacement.js"></script> -->
 
   <?php include("includes/footer.php"); ?>
 

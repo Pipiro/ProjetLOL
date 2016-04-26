@@ -1,9 +1,7 @@
 #champ1 {
     width: 200px;   
     height: 500px;
-    position: absolute;
-    top:100px;
-    left:440px;
+    float: left;
     text-align: center;
 }
 
@@ -17,9 +15,8 @@
 #champ2 {
     width: 200px;   
     height: 500px;
-    position: absolute;
-    top:100px;
-    left:660px;
+    float: left;
+    margin-left: 20px;
     text-align: center;
 }
 
@@ -33,9 +30,8 @@
 #champ3 {
     width: 200px;   
     height: 500px;
-    position: absolute;
-    top:100px;
-    left:880px;
+    float: left;
+    margin-left: 20px;
     text-align: center;
 }
 
@@ -49,9 +45,8 @@
 #champ4 {
     width: 200px;   
     height: 500px;
-    position: absolute;
-    top:100px;
-    left:1100px;
+    float: left;
+    margin-left: 20px;
     text-align: center;
 }
 
@@ -65,9 +60,8 @@
 #champ5 {
     width: 200px;   
     height: 500px;
-    position: absolute;
-    top:100px;
-    left:1320px;
+    float: left;
+    margin-left: 20px;
     text-align: center;
 }
 
