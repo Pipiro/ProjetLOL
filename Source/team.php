@@ -1,34 +1,8 @@
 <?php
-        require 'required.php';
+    require 'required.php';
 
-        //onglet actif
-        $activeTab = "team";
-
-        //on récupére les joueurs a surveiller
-        $pm = new PdoPlayersManager();
-        $players = $pm->getActivesPlayers();
-
-        //on récupére les infos de league pour chaque joueurs
-        $am = new PdoApiKeyManager();
-        $playersStats = null;
-
-        foreach($players as $player)
-        {
-          $playersStats[$player->getName()] = $am->getInfoLeagueByIdPlayer($player->getIdLol());           
-        }
-
-        //var_dump($playersStats);
-        /*$searchFreeChamp = "http://prod.api.pvp.net/api/lol/euw/v1.1/champion?api_key=720315b6-0816-4222-b740-291bc1ae4af9";
-        $lol = curl_init();
-        curl_setopt($lol, CURLOPT_URL, $searchFreeChamp);
-        curl_setopt($lol, CURLOPT_RETURNTRANSFER, TRUE);
-        $freeChamp = curl_exec($lol);
-        $freeChamp = json_decode($freeChamp);*/
-
-    function strReplaceAssoc(array $replace, $subject) 
-    { 
-        return str_replace(array_keys($replace), array_values($replace), $subject);    
-    } 
+    //onglet actif
+    $activeTab = "team";
 ?>
 
 
@@ -47,6 +21,47 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css" />
 
+    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
+    <!-- <script type="text/javascript" src="jquery/script_deplacement.js"></script> -->
+
+    <script type="text/javascript">
+     // Au premier chargement on appel ajax
+      $( document ).ready(function() {
+
+          getPlayersTeam();
+
+      });
+
+      function getPlayersTeam()
+      {
+        //affichage du chargement
+       $('#affichage').html("<br /><br /><div style='text-align: center;'><p>Récupération et traitement des données</p><img src='images/loader.gif' alt='chargement...'/></div>")
+       
+       //requête ajax, appel du fichier _returnNumberKeysAvailables.php
+       $.ajax(
+       {
+        type: "GET",
+        url: "ajax/_returnPlayersTeam.php",
+        dataType : "html",
+        //affichage de l'erreur en cas de problème
+        error:function(msg, string)
+        {
+          alert( "Error !: " + string );
+        },
+        success:function(data)
+        {
+          //on met à jour la div contenu_stats avec les données reçus
+          //on vide la div et on le cache
+          $("#affichage").empty().hide();
+          //on affecte les resultats au div
+          $("#affichage").append(data);
+          //on affiche les resultats avec la transition
+          $('#affichage').fadeIn(800);
+        }
+       });
+      }
+
+    </script>
   </head>
 
   <body>
@@ -56,137 +71,16 @@
      <?php include("includes/header.php"); ?>
 
       <div class="jumbotron" style="width:1200px;height:800px;">
+
         <div id="affichage">
-
-        <!-- tableau associatif pour rank -->
-        <?php $replace = array( 
-        ' III' => '_3',
-        ' II' => '_2',
-        ' IV' => '_4',
-        ' I' => '_1', 
-        ' V' => '_5'); 
-
-        $indiceBoucle = 1; //indice boucle pour calculer les divs ?>
-
-        <?php foreach($playersStats as $playerName => $playerStats): ?>
-          <?php if (!isset($playerStats->status)) { ?>
-            <?php $playerIdLol = key($playerStats); // récupération de la clé du joueur?>
-            <?php foreach(current($playerStats) as $league): ?>
-              <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
-                <?php $tierLower = strtolower($league->tier); ?>
-                <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
-                  <?php echo "<div id='imageChamp".$indiceBoucle."'></div>"; ?>
-
-                  <?php foreach($league->entries as $entry): ?>
-                    <?php if ($entry->playerOrTeamId == $playerIdLol): ?>
-            
-                          <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2016'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
-
-                          <!-- on parse la ligue pour récupérer l'image  -->
-                          <?php $imageLeagueLien = "http://lkimg.zamimg.com/images/medals/" . $tierLower . " " . $entry->division . ".png";
-                          $imageLeague = strReplaceAssoc($replace, $imageLeagueLien); ?>
-
-                          <?php echo "<img src='". $imageLeague . "'></img>"; ?>
-
-                          <?php echo $league->name . "<br />"?>
-                          <?php echo $entry->leaguePoints . " LP" ?>
-                          <?php echo strtoupper($tierLower); ?>
-                          <?php echo $entry->division ?>
-                          <?php if (isset($entry->miniSeries)) {
-                          $series = str_split($entry->miniSeries->progress);
-                          echo "<br />";
-                          foreach ($series as $serie ) {
-                            if ($serie == "W")
-                            {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/356.png'></img>";
-                            }
-                            else if ($serie == "L")
-                            {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/357.png'></img>";
-                            }
-                            else if ($serie == "N")
-                            {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
-                            }
-                          }
-
-                        } ?>
-
-                  <?php endif ?>
-                <?php endforeach; ?>
-                </div>
-              <?php } ?>
-            <?php endforeach; ?>
-          <?php } else { ?>
-          <!-- joueur unranked -->
-           <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
-                <?php echo "<div id='imageChamp".$indiceBoucle."'></div>"; ?>
-
-                      <?php echo "<a href='statsPlayer.php?id=" . $pm->getIdLolByNamePlayer($playerName) . "&season=2016'>" . "<br /><b>" . $playerName . "</b></a>";
-
-
-                      echo "<br /><br /><br />UNRANKED"; ?>
-
-            </div>
-          <?php } ?>
-
-          <?php $indiceBoucle++; ?>
-        <?php endforeach; ?>
 
         </div>
 
-    <!-- <div id="freeHeroes">
-      <p>Free Heroes : </p>
+      </div>
 
-      <?php foreach($freeChamp->champions as $champ): ?>
+      <?php include("includes/footer.php"); ?>
 
-            <?php if ($champ->freeToPlay == "FREE") { ?>
-              <div id="caseChamp">
-              <?php echo "<img src='http://ddragon.leagueoflegends.com/cdn/3.15.5/img/champion/" . $champ->name . ".png'". "title='". $champ->name . "'></img>"; ?>
-            </div>
-          <?php } ?>
-
-        
-      <?php endforeach; ?>
-    </div>
-    
-    <div id="myProfile">
-
-      <p>Mon profil</p>
-
-      <?php foreach($myLeague as $league): ?>
-        <?php echo "<h1>" . $league->queue . " - " . $league->name . "</h1>" ?>
-        <?php foreach($league->entries as $entry): ?>
-          <?php if ($entry->playerOrTeamName == "Pipiroo" || $entry->playerOrTeamName == "Incredible Geeks" || $entry->playerOrTeamName == "FEED TO FEED"): ?>
-              <li>
-              <?php echo $entry->playerOrTeamName ?>
-              <?php echo $entry->leaguePoints . " LP" ?>
-              <?php echo $entry->tier ?>
-              <?php echo $entry->rank ?>
-            </li>
-          <?php endif ?>
-        <?php endforeach; ?>
-        <?php //echo serialize($league) ?>
-      <?php endforeach; ?>
-
-      <?php //Secho serialize($myLeague) ?>
-
-    </div> -->
-
-  </div>
-
-    <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
-    <!-- <script type="text/javascript" src="jquery/script_deplacement.js"></script> -->
-
-  <?php include("includes/footer.php"); ?>
-
-  </div>
-
-   
-
-      
-
-  </div> <!-- /container -->
+   </div> <!-- /container -->
 
   </body>
 </html>

@@ -8,26 +8,19 @@
     $am = new PdoApiKeyManager();
     if (isset($_POST['season']))
     {
-      $statsJoueurRanked = $am->getStatsRankedByIdPlayer($_GET['id'],$_POST['season']);
-      $statsJoueurSummary = $am->getStatsSummaryByIdPlayer($_GET['id'],$_POST['season']);
       $numberSeason = $_POST['season'];    
     }
     else if (isset($_GET['season']))
     {
-      $statsJoueurRanked = $am->getStatsRankedByIdPlayer($_GET['id'],$_GET['season']);
-      $statsJoueurSummary = $am->getStatsSummaryByIdPlayer($_GET['id'],$_GET['season']);
       $numberSeason = $_GET['season'];
     }
     else
     {
-      $statsJoueurRanked = $am->getStatsRankedByIdPlayer($_GET['id'],2016);
-      $statsJoueurSummary = $am->getStatsSummaryByIdPlayer($_GET['id'],2016);
       $numberSeason = 2016;
     }
 
     $player = $am->getPlayerById($_GET['id']);
-    $champs = $am->getChamps()->data; 
-
+    
     //on recupere le mode selectionne
     if (isset($_POST['mode']))
     {
