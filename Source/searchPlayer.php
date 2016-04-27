@@ -4,11 +4,17 @@
     //onglet actif
     $activeTab = "";
 
-    $playerId = 0;
     //on récupére les stats du joueur
     $am = new PdoApiKeyManager();
-    $playerProp = $am->getIdPlayerByName(str_replace(" ", "%20", $_GET['pseudo']));
-    if ($playerProp != null) 
+    $errorMessage = "";
+
+    $playerProp = $am->getPlayerByName(str_replace(" ", "%20", $_GET['pseudo']));
+    if (is_string($playerProp))
+    {
+        $errorMessage = $playerProp;
+    }
+
+    if ($playerProp != null && !is_string($playerProp)) 
     {
       foreach ($playerProp as $player) 
       {
@@ -63,94 +69,108 @@
 
       <div class="jumbotron" style="width:1200px;height:800px;">
         <div id="affichage">
-          <!-- tableau associatif pour rank -->
-        <?php $replace = array( 
-        ' III' => '_3',
-        ' II' => '_2',
-        ' IV' => '_4',
-        ' I' => '_1', 
-        ' V' => '_5'); ?>
 
-        <?php if ($playerProp != null) { ?>
-          <?php $ranked = false; ?>
-          <?php if (!isset($leaguePlayer->status)) { ?>
-          <!-- on prend le premier élément du tableau -->
-            <?php foreach(current($leaguePlayer) as $league): ?>
-              <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
-              <?php $tierLower = strtolower($league->tier); ?>
-                <div id="champRecherche">
-                <div id="imageRecherche"></div>
-                  <?php //var_dump($league->entries); ?>
-                <?php foreach($league->entries as $entry): ?>
-                <?php //var_dump($entry); ?>
+        <?php if ($errorMessage == ""): ?>
+            <!-- tableau associatif pour rank -->
+          <?php $replace = array( 
+          ' III' => '_3',
+          ' II' => '_2',
+          ' IV' => '_4',
+          ' I' => '_1', 
+          ' V' => '_5'); ?>
 
-                  <?php if ($entry->playerOrTeamId == $playerId): ?>
+          <?php if ($playerProp != null) { ?>
+            <?php $ranked = false; ?>
+            <?php if (!isset($leaguePlayer->status)) { ?>
+              <!-- on prend le premier élément du tableau -->
+              <?php foreach(current($leaguePlayer) as $league): ?>
 
-                      <?php $ranked = true; ?>
+                <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
+                  <?php $tierLower = strtolower($league->tier); ?>
+                  <div id="champRecherche">
+                    <div id="imageRecherche"></div>
 
-                      <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2016'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
+                    <?php foreach($league->entries as $entry): ?>
 
-                      <!-- on parse la ligue pour récupérer l'image  -->
-                      <?php $imageLeagueLien = "http://lkimg.zamimg.com/images/medals/" . $tierLower . " " . $entry->division . ".png";
-                      $imageLeague = strReplaceAssoc($replace, $imageLeagueLien); ?>
+                      <?php if ($entry->playerOrTeamId == $playerId): ?>
 
-                      <?php echo "<img src='". $imageLeague . "'></img>"; ?>
+                          <?php $ranked = true; ?>
+                          <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2016'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
+                          <!-- on parse la ligue pour récupérer l'image  -->
+                          <?php $imageLeagueLien = "http://lkimg.zamimg.com/images/medals/" . $tierLower . " " . $entry->division . ".png";
+                          $imageLeague = strReplaceAssoc($replace, $imageLeagueLien); ?>
+                          <?php echo "<img src='". $imageLeague . "'></img>"; ?>
+                          <?php echo $league->name . "<br />"?>
+                          <?php echo $entry->leaguePoints . " LP" ?>
+                          <?php echo strtoupper($tierLower); ?>
+                          <?php echo $entry->division ?>
+                          <?php if (isset($entry->miniSeries)) {
+                          $series = str_split($entry->miniSeries->progress);
+                          echo "<br />";
+                          foreach ($series as $serie ) {
+                            if ($serie == "W")
+                            {
+                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/356.png'></img>";
+                            }
+                            else if ($serie == "L")
+                            {
+                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/357.png'></img>";
+                            }
+                            else if ($serie == "N")
+                            {
+                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
+                            }
+                          }
 
-                      <?php echo $league->name . "<br />"?>
-                      <?php echo $entry->leaguePoints . " LP" ?>
-                      <?php echo strtoupper($tierLower); ?>
-                      <?php echo $entry->division ?>
-                      <?php if (isset($entry->miniSeries)) {
-                      $series = str_split($entry->miniSeries->progress);
-                      echo "<br />";
-                      foreach ($series as $serie ) {
-                        if ($serie == "W")
-                        {
-                          echo "<img src='http://lkimg.zamimg.com/assets/000/000/356.png'></img>";
-                        }
-                        else if ($serie == "L")
-                        {
-                          echo "<img src='http://lkimg.zamimg.com/assets/000/000/357.png'></img>";
-                        }
-                        else if ($serie == "N")
-                        {
-                          echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
-                        }
-                      }
+                        } ?>
 
-                    } ?>
+                      <?php endif ?>
 
-                  <?php endif ?>
-                <?php endforeach; ?>
-                </div>
-              <?php } ?>
-            <?php endforeach; ?>
+                    <?php endforeach; ?>
 
+                  </div>
+                <?php } ?>
+              <?php endforeach; ?>
+
+            <?php } ?>
+
+          <!-- Le joueur n'a pas été trouvé -->
           <?php } else { ?>
+            <div id="champRecherche">
+                  <div id="imageRecherche"></div>
+
+                      <?php $ranked = true;
+
+                      echo "<br /><b>" . $_GET['pseudo'] . "</b></a>";
+
+                      echo "<br /><br /><br />Ce joueur n'existe pas."; ?>
+
+            </div>
           <?php } ?>
-        <?php } else { ?>
-          <div id="champRecherche">
-                <div id="imageRecherche"></div>
 
-                    <?php $ranked = true;
+          <!-- Le joueur n'est pas classé -->
+          <?php if ($ranked == false) { ?>
+              <div id="champRecherche">
+                  <div id="imageRecherche"></div>
 
-                    echo "<br /><b>" . $_GET['pseudo'] . "</b></a>";
+                      <?php echo "<br /><b>" . $_GET['pseudo'] . "</b></a>"; ?>
 
-                    echo "<br /><br /><br />Ce joueur n'existe pas."; ?>
+                      <br />
 
+                      <img src="http://lkimg.zamimg.com/images/medals/unknown.png"></img>
+
+                      <br /><br /><br />UNRANKED
+
+              </div>
+          <?php } ?>
+
+        <?php else: ?>
+
+          <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
+              <strong>Ho non!</strong> L'API de League Of Legends a renvoyé une erreur : <?= $errorMessage ?>.
           </div>
 
-        <?php } ?>
-        <?php if ($ranked == false) { ?>
-            <div id="champRecherche">
-                <div id="imageRecherche"></div>
-
-                    <?php echo "<br /><b>" . $_GET['pseudo'] . "</b></a>";
-
-                    echo "<br /><br /><br />UNRANKED"; ?>
-
-                </div>
-          <?php } ?>
+        <?php endif ?>
         </div>    
       </div>
       

@@ -8,10 +8,21 @@
     //on récupére les infos de league pour chaque joueurs
     $am = new PdoApiKeyManager();
     $playersStats = null;
+    $errorMessage = "";
 
     foreach($players as $player)
     {
-      $playersStats[$player->getName()] = $am->getInfoLeagueByIdPlayer($player->getIdLol());           
+      // on vérifie que l'api ne renvoie pas de messages d'erreurs
+      $resultApi = $am->getInfoLeagueByIdPlayer($player->getIdLol());
+      if (is_string($resultApi))
+      {
+        $errorMessage = $resultApi;
+        break;
+      }
+      else
+      {
+        $playersStats[$player->getName()] = $resultApi;     
+      }      
     }
 
         //var_dump($playersStats);
@@ -27,7 +38,7 @@
         return str_replace(array_keys($replace), array_values($replace), $subject);    
     } ?>
 
-
+    <?php if ($errorMessage == ""): ?>
      <!-- tableau associatif pour rank -->
         <?php $replace = array( 
         ' III' => '_3',
@@ -77,7 +88,7 @@
                             else if ($serie == "N")
                             {
                               echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
-                            }
+                            }                          
                           }
 
                         } ?>
@@ -92,10 +103,13 @@
            <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
                 <?php echo "<div id='imageChamp".$indiceBoucle."'></div>"; ?>
 
-                      <?php echo "<a href='statsPlayer.php?id=" . $pm->getIdLolByNamePlayer($playerName) . "&season=2016'>" . "<br /><b>" . $playerName . "</b></a>";
+                      <?php echo "<a href='statsPlayer.php?id=" . $pm->getIdLolByNamePlayer($playerName) . "&season=2016'>" . "<br /><b>" . $playerName . "</b></a>"; ?>
 
+                      <br />
 
-                      echo "<br /><br /><br />UNRANKED"; ?>
+                      <img src="http://lkimg.zamimg.com/images/medals/unknown.png"></img>
+
+                      <br /><br />UNRANKED
 
             </div>
           <?php } ?>
@@ -105,40 +119,48 @@
 
         </div>
 
-    <!-- <div id="freeHeroes">
-      <p>Free Heroes : </p>
+      <!-- <div id="freeHeroes">
+        <p>Free Heroes : </p>
 
-      <?php foreach($freeChamp->champions as $champ): ?>
+        <?php foreach($freeChamp->champions as $champ): ?>
 
-            <?php if ($champ->freeToPlay == "FREE") { ?>
-              <div id="caseChamp">
-              <?php echo "<img src='http://ddragon.leagueoflegends.com/cdn/3.15.5/img/champion/" . $champ->name . ".png'". "title='". $champ->name . "'></img>"; ?>
-            </div>
-          <?php } ?>
+              <?php if ($champ->freeToPlay == "FREE") { ?>
+                <div id="caseChamp">
+                <?php echo "<img src='http://ddragon.leagueoflegends.com/cdn/3.15.5/img/champion/" . $champ->name . ".png'". "title='". $champ->name . "'></img>"; ?>
+              </div>
+            <?php } ?>
 
-        
-      <?php endforeach; ?>
-    </div>
-    
-    <div id="myProfile">
-
-      <p>Mon profil</p>
-
-      <?php foreach($myLeague as $league): ?>
-        <?php echo "<h1>" . $league->queue . " - " . $league->name . "</h1>" ?>
-        <?php foreach($league->entries as $entry): ?>
-          <?php if ($entry->playerOrTeamName == "Pipiroo" || $entry->playerOrTeamName == "Incredible Geeks" || $entry->playerOrTeamName == "FEED TO FEED"): ?>
-              <li>
-              <?php echo $entry->playerOrTeamName ?>
-              <?php echo $entry->leaguePoints . " LP" ?>
-              <?php echo $entry->tier ?>
-              <?php echo $entry->rank ?>
-            </li>
-          <?php endif ?>
+          
         <?php endforeach; ?>
-        <?php //echo serialize($league) ?>
-      <?php endforeach; ?>
+      </div>
+      
+      <div id="myProfile">
 
-      <?php //Secho serialize($myLeague) ?>
+        <p>Mon profil</p>
 
-    </div> -->
+        <?php foreach($myLeague as $league): ?>
+          <?php echo "<h1>" . $league->queue . " - " . $league->name . "</h1>" ?>
+          <?php foreach($league->entries as $entry): ?>
+            <?php if ($entry->playerOrTeamName == "Pipiroo" || $entry->playerOrTeamName == "Incredible Geeks" || $entry->playerOrTeamName == "FEED TO FEED"): ?>
+                <li>
+                <?php echo $entry->playerOrTeamName ?>
+                <?php echo $entry->leaguePoints . " LP" ?>
+                <?php echo $entry->tier ?>
+                <?php echo $entry->rank ?>
+              </li>
+            <?php endif ?>
+          <?php endforeach; ?>
+          <?php //echo serialize($league) ?>
+        <?php endforeach; ?>
+
+        <?php //Secho serialize($myLeague) ?>
+
+      </div> -->
+
+    <?php else: ?>
+
+        <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
+            <strong>Ho non!</strong> L'API de League Of Legends a renvoyé une erreur : <?= $errorMessage ?>.
+        </div>
+
+    <?php endif ?>

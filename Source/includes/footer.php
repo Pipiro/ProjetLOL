@@ -2,9 +2,6 @@
 
   $am = new PdoApiKeyManager();
   $numberKeyAvailable = $am->getNumberKeysAvailable();
-
-//securite
-//if (!isset($activeTab))header('Location: ../index.php'); 
 ?>
 
 <script type="text/javascript">
@@ -12,6 +9,7 @@
       {
         function getNumberKey()
         {
+          var oldNumberKey = $("#number_keys_available").html();
           //requête ajax, appel du fichier _returnNumberKeysAvailables.php
           $.ajax(
           {
@@ -25,25 +23,28 @@
             },
             success:function(data)
             {
-            //on met à jour la div number_keys_available avec les données reçus
-            //on vide la div et on le cache
-            $("#number_keys_available").empty().hide();
-            //on affecte les resultats au div
-            $("#number_keys_available").append(data);
-            //on affiche les resultats avec la transition
-            $('#number_keys_available').fadeIn(2000);
-                        //on supprime les class du bouton
-            $('#button_key').removeClass( "btn-success" );
-            $('#button_key').removeClass( "btn-info" );
-            $('#button_key').removeClass( "btn-danger" );
-            //on met a jours la class
-            if (data == 7) {
-              $('#button_key').addClass( "btn-success" );
-            } else if (data > 3) {
-              $('#button_key').addClass( "btn-info" );
-            } else {
-              $('#button_key').addClass( "btn-danger" );
-            }
+              //on met à jour la div number_keys_available avec les données reçus si le nombre de clés à changé
+              if (oldNumberKey != data)
+              {
+                //on vide la div et on le cache
+                $("#number_keys_available").empty().hide();
+                //on affecte les resultats au div
+                $("#number_keys_available").append(data);
+                //on affiche les resultats avec la transition
+                $('#number_keys_available').fadeIn(2000);
+                            //on supprime les class du bouton
+                $('#button_key').removeClass( "btn-success" );
+                $('#button_key').removeClass( "btn-info" );
+                $('#button_key').removeClass( "btn-danger" );
+                //on met a jours la class
+                if (data == 7) {
+                  $('#button_key').addClass( "btn-success" );
+                } else if (data > 3) {
+                  $('#button_key').addClass( "btn-info" );
+                } else {
+                  $('#button_key').addClass( "btn-danger" );
+                }
+              }
             }
           });
         }

@@ -9,7 +9,7 @@ class PdoPlayersManager extends AbstractPdoManager
 	{
 		$results = array();
 		
-		$query = $this->pdo->prepare("SELECT id, name, idLol, actif FROM players WHERE actif=1 ORDER BY id ASC");
+		$query = $this->pdo->prepare("SELECT id, name, idLol, actif FROM players WHERE actif=1 ORDER BY id ASC LIMIT 5");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_OBJ)) 
@@ -34,6 +34,19 @@ class PdoPlayersManager extends AbstractPdoManager
 		$query->closeCursor();
 
 		return $result->idLol;
+	}
+
+	public function getPlayerbyId($id)
+	{
+		$query = $this->pdo->prepare("SELECT id, name, idLol, actif FROM players WHERE id='$id'");
+		$query->execute();
+		
+		$result = $query->fetch(PDO::FETCH_OBJ);
+		$player = new players($result->id, $result->name, $result->idLol, $result->actif);
+		
+		$query->closeCursor();
+
+		return $player;
 	}
 
 	public function addPlayer($name,$idLol)

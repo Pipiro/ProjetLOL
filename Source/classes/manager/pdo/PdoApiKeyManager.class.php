@@ -17,7 +17,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
         
 	}
@@ -32,7 +32,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
         
 	}
@@ -47,7 +47,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
         
 	}
@@ -62,7 +62,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
         
 	}
@@ -77,7 +77,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
         
 	}
@@ -98,7 +98,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
 	}
 
@@ -112,7 +112,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	    else
 	    {
-	    	return null;
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
 	    }
 	}
 
@@ -124,10 +124,11 @@ class PdoApiKeyManager extends AbstractPdoManager
 		//fix du problème ssl
 		curl_setopt($curl, CURLOPT_CAINFO, 'C:\wamp\ssl\cacert.pem');
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 5000); // l'API a 5s pour répondre sinon on renvoie une erreur
 		$result = curl_exec($curl);
 		if($result == false)
 		{
-			echo 'error:' . curl_error($curl);
+			return curl_error($curl);
 		}
 		$result = json_decode($result);
 		return $result;

@@ -4,9 +4,14 @@
     //onglet actif
     $activeTab = "index";
 
-    //on récupére les joueurs a surveiller
+    //on récupére les teams
+    $tm = new PdoTeamsManager();
+    $teams = $tm->getTeams();
+
+    $pttm = new PdoPlayersToTeamManager();
+
     $pm = new PdoPlayersManager();
-    $players = $pm->getActivesPlayers();
+    //$players = $pm->getActivesPlayers();
 ?>
 
 
@@ -48,10 +53,18 @@
 
          <center><img src="images/LeagueOfLegendsLogo.png"></center>
 
-         <?php foreach($players as $player)
-         {
-            echo $player->getName()."<br \>";           
-         } ?>
+          <?php //on récupére les joueurs a surveiller
+          foreach($teams as $team)
+          {
+            echo "<h1>".$team->getName()."</h1><br \>";
+            $playersToTeam = $pttm->getPlayersByTeamId($team->getId());
+            foreach($playersToTeam as $playerToTeam)
+            {
+              $player = $pm->getPlayerbyId($playerToTeam->getIdPlayer());
+              echo $player->getName()."<br \>";
+            }
+          } 
+          ?>
        
         </div>
     </div>
