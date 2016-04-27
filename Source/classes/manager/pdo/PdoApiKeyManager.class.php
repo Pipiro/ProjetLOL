@@ -124,7 +124,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 		//fix du problème ssl
 		curl_setopt($curl, CURLOPT_CAINFO, 'C:\wamp\ssl\cacert.pem');
 		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 5000); // l'API a 5s pour répondre sinon on renvoie une erreur
+		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 10000); // l'API a 5s pour répondre sinon on renvoie une erreur
 		$result = curl_exec($curl);
 		if($result == false)
 		{

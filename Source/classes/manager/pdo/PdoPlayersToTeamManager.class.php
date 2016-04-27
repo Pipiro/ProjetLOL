@@ -9,13 +9,13 @@ class PdoPlayersToTeamManager extends AbstractPdoManager
 	{
 		$results = array();
 		
-		$query = $this->pdo->prepare("SELECT id, idPlayer, idTeam FROM playersToTeam WHERE idTeam='$idTeam' ORDER BY id ASC LIMIT 5");
+		$query = $this->pdo->prepare("SELECT id, idPlayer, idTeam FROM playerstoteam WHERE idTeam='$idTeam' ORDER BY id ASC LIMIT 5");
 		$query->execute();
 		
 		while($result = $query->fetch(PDO::FETCH_OBJ)) 
 		{
-			$playerstoTeam = new playerstoTeam($result->id, $result->idPlayer, $result->idTeam);
-			$results[] = $playerstoTeam;
+			$playersToTeam = new playersToTeam($result->id, $result->idPlayer, $result->idTeam);
+			$results[] = $playersToTeam;
 		}
 		
 		$query->closeCursor();
