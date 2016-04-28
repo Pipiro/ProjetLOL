@@ -1,18 +1,26 @@
 <?php      
     require '../required.php';
 
-    //on récupére les joueurs a surveiller
+    // Récupération des joueurs a surveiller
     $pm = new PdoPlayersManager();
-    $players = $pm->getActivesPlayers();
+    //$players = $pm->getActivesPlayers();
 
-    //on récupére les infos de league pour chaque joueurs
+    // Récupération de la team
+    $tm = new PdoTeamsManager();
+    $team = $tm->getTeamById($_GET['idTeam']);
+
+    // on récupére les joueurs actifs de la team
+    $pttm = new PdoPlayersToTeamManager();
+    $players = $pttm->getActivesPlayersByTeamId($_GET['idTeam']);
+
+    // Récupération des infos de league pour chaque joueurs
     $am = new PdoApiKeyManager();
     $playersStats = null;
     $errorMessage = "";
 
     foreach($players as $player)
     {
-      // on vérifie que l'api ne renvoie pas de messages d'erreurs
+      // Vérification que l'api ne renvoie pas de messages d'erreurs
       $resultApi = $am->getInfoLeagueByIdPlayer($player->getIdLol());
       if (is_string($resultApi))
       {
@@ -105,11 +113,9 @@
 
                       <?php echo "<a href='statsPlayer.php?id=" . $pm->getIdLolByNamePlayer($playerName) . "&season=2016'>" . "<br /><b>" . $playerName . "</b></a>"; ?>
 
-                      <br />
-
                       <img src="http://lkimg.zamimg.com/images/medals/unknown.png"></img>
 
-                      <br /><br />UNRANKED
+                      <br />UNRANKED
 
             </div>
           <?php } ?>

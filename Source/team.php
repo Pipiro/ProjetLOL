@@ -1,8 +1,12 @@
 <?php
     require 'required.php';
 
-    //onglet actif
+    // onglet actif
     $activeTab = "team";
+
+    // récupération des tems
+    $tm = new PdoTeamsManager();
+    $teams = $tm->getTeams();
 ?>
 
 
@@ -24,15 +28,15 @@
     <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
     <!-- <script type="text/javascript" src="jquery/script_deplacement.js"></script> -->
 
+
+
     <script type="text/javascript">
      // Au premier chargement on appel ajax
       $( document ).ready(function() {
-
-          getPlayersTeam();
-
+          getPlayersTeam(<?= $teams[0]->getId() ?>);
       });
 
-      function getPlayersTeam()
+      function getPlayersTeam(idTeam)
       {
         //affichage du chargement
        $('#affichage').html("<br /><br /><div style='text-align: center;'><p>Récupération et traitement des données</p><img src='images/loader.gif' alt='chargement...'/></div>")
@@ -41,7 +45,7 @@
        $.ajax(
        {
         type: "GET",
-        url: "ajax/_returnPlayersTeam.php",
+        url: "ajax/_returnPlayersTeam.php?idTeam="+idTeam,
         dataType : "html",
         //affichage de l'erreur en cas de problème
         error:function(msg, string)
@@ -71,6 +75,14 @@
      <?php include("includes/header.php"); ?>
 
       <div class="jumbotron" style="width:1200px;height:800px;">
+
+        <form action='statsPlayer.php' method='post'>
+                  <select onchange="getPlayersTeam(this.value)">
+                    <?php foreach($teams as $team): ?>
+                      <?php echo "<option value='".$team->getId()."'>".$team->getName()."</option>"; ?>
+                    <?php endforeach; ?>
+                  </select>
+        </form>
 
         <div id="affichage">
 

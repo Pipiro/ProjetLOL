@@ -83,6 +83,7 @@
 }
 
 #affichage {
+    margin-top: 25px;
 
 }
 
@@ -160,4 +161,8 @@
     width: 200px;   
     height: 400px;
     border: 1px solid black;
+}
+
+#selectTeam {
+    margin-top: -30px;
 }

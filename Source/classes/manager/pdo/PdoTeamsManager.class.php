@@ -24,8 +24,22 @@ class PdoTeamsManager extends AbstractPdoManager
         
 	}
 
+	function getTeamById($id)
+	{
+
+	}
+
 	function addTeam($name)
 	{
+		$query = $this->pdo->prepare("SELECT id, name FROM teams WHERE id='$id'");
+		$query->execute();
+		
+		$result = $query->fetch(PDO::FETCH_OBJ);
+		$team = new teams($result->id, $result->name);
+		
+		$query->closeCursor();
+
+		return $team;
 
 	}
 
