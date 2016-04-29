@@ -20,6 +20,7 @@
       {
         $playerId = $player->id;
         $leaguePlayer = $am->getInfoLeagueByIdPlayer($player->id);
+        $currentGamePlayer = $am->getPlayerInGame($player->id);
       }
     }
     else
@@ -48,6 +49,10 @@
     <!-- Bootstrap core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet" type="text/css" />
+
+    <!-- Icones animés -->
+    <link rel="stylesheet" href="css/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
     <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
 
@@ -88,7 +93,11 @@
                 <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
                   <?php $tierLower = strtolower($league->tier); ?>
                   <div id="champRecherche">
-                    <div id="imageRecherche"></div>
+                    <div id="imageRecherche">
+                        <?php if (!isset($currentGamePlayer->status)) { // Vérification si le joueur est en jeu ?>
+                          <a class='btn btn-info' style="margin-top: 350px;" href='#'><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</a>
+                        <?php } ?>
+                    </div>
 
                     <?php foreach($league->entries as $entry): ?>
 

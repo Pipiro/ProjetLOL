@@ -2,13 +2,23 @@
 
 interface ApiKeyManager 
 {
+	function getKeys();
+	function getKeyByUse();
+	function updateKey($id, $timestamp10s, $number10s, $timestamp10m, $number10m);
+	function getNumberKeysAvailable();
+	function verifQuotaAndUpdate($keyAPI);
+	function verifQuota($keyAPI);
+	function getResultsApi($query);
+
 	function getInfoLeagueByIdPlayer($id);
 	function getStatsByIdPlayer($id, $season);
 	function getChamps();
+	function getStatsSummaryByIdPlayer($id, $season);
+	function getMatchListByIdPlayerAndSeasonAndMode($id, $season, $mode);
 	function getPlayerByName($name);
 	function getPlayerById($id);
-	function getKeyByUse();
-	function updateKey($id, $timestamp10s, $number10s, $timestamp10m, $number10m);
+	function getPlayerInGame($id);
+
 	/*function getAllSaves($date);
 	function getSaveWithFiltersWithDate($type, $client, $statut, $date);
 	function getSaveWithFiltersWithoutDate($type, $client, $statut);

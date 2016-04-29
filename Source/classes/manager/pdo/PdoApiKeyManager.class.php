@@ -7,131 +7,66 @@ class PdoApiKeyManager extends AbstractPdoManager
 	const APIURL = "https://euw.api.pvp.net/api/lol";
 	const APIURLSTATIC = "https://global.api.pvp.net/api/lol/static-data";
 
-	public function getInfoLeagueByIdPlayer($id)
+	
+	public function getKeys()
 	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
+		$results = array();
+		
+		$query = $this->pdo->prepare("SELECT id, name, value, timestamp10s, number10s, timestamp10m, number10m, actif FROM apikey ORDER BY id ASC");
+		$query->execute();
+		
+		while($result = $query->fetch(PDO::FETCH_OBJ)) 
 		{
-			$searchLeague = self::APIURL . "/euw/v2.5/league/by-summoner/" . $id . "?api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchLeague);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-        
-	}
-
-	public function getStatsRankedByIdPlayer($id, $season)
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			$searchStats = self::APIURL . "/euw/v1.3/stats/by-summoner/" . $id . "/ranked?season=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchStats);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-        
-	}
-
-	public function getStatsSummaryByIdPlayer($id, $season)
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			$searchStats = self::APIURL . "/euw/v1.3/stats/by-summoner/" . $id . "/summary?season=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchStats);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-        
-	}
-
-	public function getMatchListByIdPlayerAndSeasonAndMode($id, $season, $mode)
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			$searchMatchs = self::APIURL . "/euw/v2.2/matchlist/by-summoner/" . $id . "?rankedQueues=" . $mode . "&seasons=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchMatchs);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-        
-	}
-
-	public function getChamps()
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			$searchChamps = self::APIURLSTATIC . "/euw/v1.2/champion?api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchChamps);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-        
-	}
-
-	function getPlayerByName($name)
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			try
-			{
-				$searchPlayer = self::APIURL . "/euw/v1.4/summoner/by-name/" . $name . "?api_key=" . $keyAPI->getValue();
-		        return $this->getResultsApi($searchPlayer);
-		    }catch(Exception $e)
-		    {
-
-	    	}
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-	}
-
-	function getPlayerById($id)
-	{
-		$keyAPI = $this->getKeyByUse();
-		if ($keyAPI != null)
-		{
-			$searchPlayer = self::APIURL . "/euw/v1.4/summoner/" . $id . "?api_key=" . $keyAPI->getValue();
-	        return $this->getResultsApi($searchPlayer);
-	    }
-	    else
-	    {
-	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
-	    }
-	}
-
-	public function getResultsApi($query)
-	{
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, $query);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
-		//fix du problème ssl
-		curl_setopt($curl, CURLOPT_CAINFO, 'C:\wamp\ssl\cacert.pem');
-		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
-		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 10000); // l'API a 5s pour répondre sinon on renvoie une erreur
-		$result = curl_exec($curl);
-		if($result == false)
-		{
-			return curl_error($curl);
+			$keyAPI = new apikey($result->id, $result->name, $result->value, $result->timestamp10s, $result->number10s, $result->timestamp10m, $result->number10m, $result->actif);
+			$results[] = $keyAPI;
 		}
-		$result = json_decode($result);
-		return $result;
+		
+		$query->closeCursor();
+
+		return $results;
+	}
+
+	public function getKeyByUse()
+	{
+		//on récupére la liste des clées
+		$keys = $this->getKeys();
+		//pour chaque clé on va analyser si elle est disponible
+		foreach ($keys as $keyAPI){
+			if ($this->verifQuotaAndUpdate($keyAPI) && $keyAPI->getActif()==1)
+			{
+				return $keyAPI;
+			}
+		}
+		return null;
+	}
+
+	public function updateKey($id, $timestamp10s, $number10s, $timestamp10m, $number10m)
+	{
+		$statement = "UPDATE apikey SET ";
+		if ($timestamp10s!=null)
+		{
+			$statement = $statement . "timestamp10s='$timestamp10s', ";
+		} 
+		if ($number10s!=null) 
+		{
+			$statement = $statement . "number10s='$number10s', ";
+		}
+		if ($timestamp10m!=null)
+		{
+			$statement = $statement . "timestamp10m='$timestamp10m', ";
+		} 
+		if ($number10m!=null) 
+		{
+			$statement = $statement . "number10m='$number10m '";
+		}
+		$statement = $statement . "WHERE id='$id'";
+		if (stripos($statement, ", WHERE"))
+		{
+			str_replace(", WHERE", " WHERE", $statement);
+		}
+		$query = $this->pdo->prepare($statement);
+
+		$resultat=$query->execute();
 	}
 
 	public function getNumberKeysAvailable()
@@ -150,21 +85,7 @@ class PdoApiKeyManager extends AbstractPdoManager
 		return count($keysAvailable);
 	}
 
-	public function getKeyByUse()
-	{
-		//on récupére la liste des clées
-		$keys = $this->getKeys();
-		//pour chaque clé on va analyser si elle est disponible
-		foreach ($keys as $keyAPI){
-			if ($this->verifQuotaAndUpdate($keyAPI) && $keyAPI->getActif()==1)
-			{
-				return $keyAPI;
-			}
-		}
-		return null;
-	}
-
-	//limite 500 requetes toutes les 10 minutes et 10 requetes toutes les 10 secondes
+		//limite 500 requetes toutes les 10 minutes et 10 requetes toutes les 10 secondes
 	public function verifQuotaAndUpdate($keyAPI)
 	{
 		$currenttimestamp = time();
@@ -242,52 +163,148 @@ class PdoApiKeyManager extends AbstractPdoManager
 		}
 	}
 
-	public function getKeys()
+	public function getResultsApi($query)
 	{
-		$results = array();
-		
-		$query = $this->pdo->prepare("SELECT id, name, value, timestamp10s, number10s, timestamp10m, number10m, actif FROM apikey ORDER BY id ASC");
-		$query->execute();
-		
-		while($result = $query->fetch(PDO::FETCH_OBJ)) 
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $query);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, TRUE);
+		//fix du problème ssl
+		curl_setopt($curl, CURLOPT_CAINFO, 'C:\wamp\ssl\cacert.pem');
+		curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);
+		curl_setopt($curl, CURLOPT_TIMEOUT_MS, 10000); // l'API a 5s pour répondre sinon on renvoie une erreur
+		$result = curl_exec($curl);
+		if($result == false)
 		{
-			$keyAPI = new apikey($result->id, $result->name, $result->value, $result->timestamp10s, $result->number10s, $result->timestamp10m, $result->number10m, $result->actif);
-			$results[] = $keyAPI;
+			return curl_error($curl);
 		}
-		
-		$query->closeCursor();
-
-		return $results;
+		$result = json_decode($result);
+		return $result;
 	}
 
-	public function updateKey($id, $timestamp10s, $number10s, $timestamp10m, $number10m)
-	{
-		$statement = "UPDATE apikey SET ";
-		if ($timestamp10s!=null)
-		{
-			$statement = $statement . "timestamp10s='$timestamp10s', ";
-		} 
-		if ($number10s!=null) 
-		{
-			$statement = $statement . "number10s='$number10s', ";
-		}
-		if ($timestamp10m!=null)
-		{
-			$statement = $statement . "timestamp10m='$timestamp10m', ";
-		} 
-		if ($number10m!=null) 
-		{
-			$statement = $statement . "number10m='$number10m '";
-		}
-		$statement = $statement . "WHERE id='$id'";
-		if (stripos($statement, ", WHERE"))
-		{
-			str_replace(", WHERE", " WHERE", $statement);
-		}
-		$query = $this->pdo->prepare($statement);
 
-		$resultat=$query->execute();
+	public function getInfoLeagueByIdPlayer($id)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchLeague = self::APIURL . "/euw/v2.5/league/by-summoner/" . $id . "?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchLeague);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+        
 	}
+
+	public function getStatsRankedByIdPlayer($id, $season)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchStats = self::APIURL . "/euw/v1.3/stats/by-summoner/" . $id . "/ranked?season=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchStats);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+        
+	}
+
+	public function getChamps()
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchChamps = self::APIURLSTATIC . "/euw/v1.2/champion?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchChamps);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+        
+	}
+
+	public function getStatsSummaryByIdPlayer($id, $season)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchStats = self::APIURL . "/euw/v1.3/stats/by-summoner/" . $id . "/summary?season=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchStats);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+        
+	}
+
+	public function getMatchListByIdPlayerAndSeasonAndMode($id, $season, $mode)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchMatchs = self::APIURL . "/euw/v2.2/matchlist/by-summoner/" . $id . "?rankedQueues=" . $mode . "&seasons=SEASON" . $season . "&api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchMatchs);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+        
+	}
+
+	function getPlayerByName($name)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			try
+			{
+				$searchPlayer = self::APIURL . "/euw/v1.4/summoner/by-name/" . $name . "?api_key=" . $keyAPI->getValue();
+		        return $this->getResultsApi($searchPlayer);
+		    }catch(Exception $e)
+		    {
+
+	    	}
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+	}
+
+	function getPlayerById($id)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchPlayer = self::APIURL . "/euw/v1.4/summoner/" . $id . "?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchPlayer);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+	}
+
+	function getPlayerInGame($id)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$currentGamePLayer = "https://euw.api.pvp.net/observer-mode/rest/consumer/getSpectatorGameInfo/EUW1/" . $id . "?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($currentGamePLayer);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+	}
+
 
 	/*public function getAllSaves ($date)
 	{

@@ -16,20 +16,23 @@
     // Récupération des infos de league pour chaque joueurs
     $am = new PdoApiKeyManager();
     $playersStats = null;
+    $playerGame = null;
     $errorMessage = "";
 
     foreach($players as $player)
     {
       // Vérification que l'api ne renvoie pas de messages d'erreurs
-      $resultApi = $am->getInfoLeagueByIdPlayer($player->getIdLol());
-      if (is_string($resultApi))
+      $resultLeagueByIdPlayer = $am->getInfoLeagueByIdPlayer($player->getIdLol());
+      $resultCurrentGamePlayer = $am->getPlayerInGame($player->getIdLol());
+      if (is_string($resultLeagueByIdPlayer))
       {
-        $errorMessage = $resultApi;
+        $errorMessage = $resultLeagueByIdPlayer;
         break;
       }
       else
       {
-        $playersStats[$player->getName()] = $resultApi;     
+        $playersStats[$player->getName()] = $resultLeagueByIdPlayer;
+        $playerGame[$player->getName()] = $resultCurrentGamePlayer;  
       }      
     }
 
@@ -59,12 +62,16 @@
 
         <?php foreach($playersStats as $playerName => $playerStats): ?>
           <?php if (!isset($playerStats->status)) { ?>
-            <?php $playerIdLol = key($playerStats); // récupération de la clé du joueur?>
+            <?php $playerIdLol = key($playerStats); // Récupération de la clé du joueur?>
             <?php foreach(current($playerStats) as $league): ?>
               <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
                 <?php $tierLower = strtolower($league->tier); ?>
                 <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
-                  <?php echo "<div id='imageChamp".$indiceBoucle."'></div>"; ?>
+                  <?php echo "<div id='imageChamp".$indiceBoucle."'>"; ?>
+                    <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
+                      <a class='btn btn-info' style="margin-top: 350px;" href='#'><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</a>
+                    <?php } ?>
+                  </div>
 
                   <?php foreach($league->entries as $entry): ?>
                     <?php if ($entry->playerOrTeamId == $playerIdLol): ?>
@@ -103,13 +110,17 @@
 
                   <?php endif ?>
                 <?php endforeach; ?>
-                </div>
+
               <?php } ?>
             <?php endforeach; ?>
           <?php } else { ?>
           <!-- joueur unranked -->
            <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
-                <?php echo "<div id='imageChamp".$indiceBoucle."'></div>"; ?>
+                <?php echo "<div id='imageChamp".$indiceBoucle."'>"; ?>
+                    <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
+                      <a class='btn btn-info' style="margin-top: 350px;" href='#'><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> In Game</a>
+                    <?php } ?>
+                  </div>
 
                       <?php echo "<a href='statsPlayer.php?id=" . $pm->getIdLolByNamePlayer($playerName) . "&season=2016'>" . "<br /><b>" . $playerName . "</b></a>"; ?>
 
@@ -117,9 +128,10 @@
 
                       <br />UNRANKED
 
-            </div>
+   
           <?php } ?>
 
+         </div>
           <?php $indiceBoucle++; ?>
         <?php endforeach; ?>
 
@@ -170,3 +182,6 @@
         </div>
 
     <?php endif ?>
+
+
+
