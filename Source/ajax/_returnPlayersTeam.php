@@ -5,6 +5,8 @@
     $pm = new PdoPlayersManager();
     //$players = $pm->getActivesPlayers();
 
+    $cpm = new PdoCachePlayersManager();
+
     // Récupération de la team
     $tm = new PdoTeamsManager();
     $team = $tm->getTeamById($_GET['idTeam']);
@@ -17,6 +19,7 @@
     $am = new PdoApiKeyManager();
     $playersStats = null;
     $playerGame = null;
+    $playerArray = null;
     $errorMessage = "";
 
     foreach($players as $player)
@@ -24,6 +27,7 @@
       // Vérification que l'api ne renvoie pas de messages d'erreurs
       $resultLeagueByIdPlayer = $am->getInfoLeagueByIdPlayer($player->getIdLol());
       $resultCurrentGamePlayer = $am->getPlayerInGame($player->getIdLol());
+      $playerArray[$player->getName()]=$player->getId();
       if (is_string($resultLeagueByIdPlayer))
       {
         $errorMessage = $resultLeagueByIdPlayer;
@@ -61,11 +65,17 @@
         $indiceBoucle = 1; //indice boucle pour calculer les divs ?>
 
         <?php foreach($playersStats as $playerName => $playerStats): ?>
+          <?php //variables pour le cache
+            $playerIdLol = null; $isRanked = null; $nickname = null; $leagueName = null; $leaguePoint = null; $leagueTier = null; $leagueDivision  = null; $miniSerieProgress = null;
+            $playerId = $playerArray[$playerName];
+           ?>
           <?php if (!isset($playerStats->status)) { ?>
-            <?php $playerIdLol = key($playerStats); // Récupération de la clé du joueur?>
             <?php foreach(current($playerStats) as $league): ?>
+              <?php $playerIdLol = key($playerStats); // Récupération de la clé du joueur?>
               <?php if ($league->queue == "RANKED_SOLO_5x5") { ?>
+                <?php $isRanked = 1; ?> 
                 <?php $tierLower = strtolower($league->tier); ?>
+                <?php $leagueTier = $league->tier; ?> 
                 <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
                   <?php echo "<div id='imageChamp".$indiceBoucle."'>"; ?>
                     <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
@@ -75,7 +85,7 @@
 
                   <?php foreach($league->entries as $entry): ?>
                     <?php if ($entry->playerOrTeamId == $playerIdLol): ?>
-            
+                          <?php $nickname = $entry->playerOrTeamName; ?> 
                           <?php echo "<a href='statsPlayer.php?id=" . $entry->playerOrTeamId . "&season=2016'>" . "<br /><b>" . $entry->playerOrTeamName . "</b></a>"?>
 
                           <!-- on parse la ligue pour récupérer l'image  -->
@@ -85,26 +95,31 @@
                           <?php echo "<img src='". $imageLeague . "'></img>"; ?>
 
                           <?php echo $league->name . "<br />"?>
+                          <?php $leagueName = $league->name; ?> 
                           <?php echo $entry->leaguePoints . " LP" ?>
+                          <?php $leaguePoint = $entry->leaguePoints; ?>
                           <?php echo strtoupper($tierLower); ?>
                           <?php echo $entry->division ?>
+                          <?php $leagueDivision = $entry->division; ?>
                           <?php if (isset($entry->miniSeries)) {
-                          $series = str_split($entry->miniSeries->progress);
-                          echo "<br />";
-                          foreach ($series as $serie ) {
-                            if ($serie == "W")
+                            $series = str_split($entry->miniSeries->progress);
+                            $miniSerieProgress = $entry->miniSeries->progress;
+                            echo "<br />";
+                            foreach ($series as $serie ) 
                             {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/356.png'></img>";
+                              if ($serie == "W")
+                              {
+                                echo "<img src='http://lkimg.zamimg.com/assets/000/000/356.png'></img>";
+                              }
+                              else if ($serie == "L")
+                              {
+                                echo "<img src='http://lkimg.zamimg.com/assets/000/000/357.png'></img>";
+                              }
+                              else if ($serie == "N")
+                              {
+                                echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
+                              }                          
                             }
-                            else if ($serie == "L")
-                            {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/357.png'></img>";
-                            }
-                            else if ($serie == "N")
-                            {
-                              echo "<img src='http://lkimg.zamimg.com/assets/000/000/358.png'></img>";
-                            }                          
-                          }
 
                         } ?>
 
@@ -115,6 +130,7 @@
             <?php endforeach; ?>
           <?php } else { ?>
           <!-- joueur unranked -->
+           <?php $isRanked = 0; ?> 
            <?php echo "<div id='champ".$indiceBoucle."'>"; ?>
                 <?php echo "<div id='imageChamp".$indiceBoucle."'>"; ?>
                     <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
@@ -133,6 +149,7 @@
 
          </div>
           <?php $indiceBoucle++; ?>
+          <?php $cpm->addCachePlayer($playerId, $isRanked, time(), $playerIdLol, $nickname, addslashes($leagueName), $leaguePoint, $leagueTier, $leagueDivision, $miniSerieProgress) ?>
         <?php endforeach; ?>
 
         </div>

@@ -157,7 +157,7 @@
       <div class="jumbotron" style="width:1200px;overflow : hidden;">
         <div id="affichage" style="margin-top: -20px;">
           <div id="filtre" style="float:right; width: 400px;">
-           <form action='statsPlayer.php' method='post'>"
+           <form action='statsPlayer.php' method='post'>
             <div class="btn-group" data-toggle="buttons" style="float:right;">
               <?php if ($numberSeason == 3) { ?>
                 <label id="2013" class="btn btn-info active">
