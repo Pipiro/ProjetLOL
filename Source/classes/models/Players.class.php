@@ -7,13 +7,15 @@ class Players
 
 	private $id;
 	private $name;
+	private $role;
 	private $idLol;
 	private $actif;
 	
-	public function __construct($id = null, $name = null, $idLol = null, $actif = null) 
+	public function __construct($id = null, $name = null, $role = null, $idLol = null, $actif = null) 
 	{
 		$this->id = $id;
 		$this->name = $name;
+		$this->role = $role;
 		$this->idLol = $idLol;
 		$this->actif = $actif;
 	}
@@ -26,6 +28,11 @@ class Players
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function getRole()
+	{
+		return $this->role;
 	}
 
 	public function getIdLol()
@@ -46,6 +53,11 @@ class Players
 	public function setName($name) 
 	{ 
 		$this->name = $name; 
+	}
+
+	public function setRole($role) 
+	{ 
+		$this->role = $role; 
 	}
 
 	public function setIdLol($idLol) 

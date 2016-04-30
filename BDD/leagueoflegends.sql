@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Jeu 28 Avril 2016 à 20:14
+-- Généré le :  Sam 30 Avril 2016 à 22:12
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -43,13 +43,50 @@ CREATE TABLE IF NOT EXISTS `apikey` (
 --
 
 INSERT INTO `apikey` (`id`, `name`, `value`, `timestamp10s`, `number10s`, `timestamp10m`, `number10m`, `actif`) VALUES
-(1, 'Pipiro', '720315b6-0816-4222-b740-291bc1ae4af9', 1461866981, 10, 1461866981, 60, 1),
-(2, 'Pipirox', 'afd770fb-cab4-42cc-b917-4a92a8d90c53', 1461866576, 5, 1461866576, 5, 1),
-(3, 'Kaaakaaapipi', '30887bc8-0c93-4867-be51-435e72dbec16', 1461865264, 10, 1461865264, 10, 1),
-(5, 'Kaakaapipi', '76496b37-61f0-4d1a-93a5-5ed8371003a7', 1461747786, 1, 1461747786, 7, 1),
-(6, 'Xanion', '8fc9f52a-1340-4d22-9268-c5da61403230', 1461747786, 1, 1461747786, 7, 1),
+(1, 'Pipiro', '720315b6-0816-4222-b740-291bc1ae4af9', 1462032155, 9, 1462032155, 193, 1),
+(2, 'Pipirox', 'afd770fb-cab4-42cc-b917-4a92a8d90c53', 1462031582, 5, 1462031582, 11, 1),
+(3, 'Kaaakaaapipi', '30887bc8-0c93-4867-be51-435e72dbec16', 1462030390, 5, 1462030390, 5, 1),
+(5, 'Kaakaapipi', '76496b37-61f0-4d1a-93a5-5ed8371003a7', 1461951034, 10, 1461951034, 10, 1),
+(6, 'Xanion', '8fc9f52a-1340-4d22-9268-c5da61403230', 1461951034, 4, 1461951034, 4, 1),
 (7, 'Stax', '9cd23d6a-5cf2-411d-9142-8f983997c8fa', 1461747786, 1, 1461747786, 7, 1),
 (8, 'smurf stax', 'c69a5e56-386d-4de3-a9aa-c4db274efd8a', 1461747786, 1, 1461747786, 7, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cacheplayers`
+--
+
+CREATE TABLE IF NOT EXISTS `cacheplayers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idPlayer` int(11) NOT NULL,
+  `isRanked` int(11) NOT NULL,
+  `updateDate` bigint(20) NOT NULL,
+  `idPlayerLol` int(11) NOT NULL,
+  `nickname` varchar(255) DEFAULT NULL,
+  `leagueName` varchar(255) DEFAULT NULL,
+  `leaguePoint` varchar(255) DEFAULT NULL,
+  `leagueTier` varchar(255) DEFAULT NULL,
+  `leagueDivision` varchar(255) DEFAULT NULL,
+  `miniSerieProgress` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idPlayer` (`idPlayer`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=226 ;
+
+--
+-- Contenu de la table `cacheplayers`
+--
+
+INSERT INTO `cacheplayers` (`id`, `idPlayer`, `isRanked`, `updateDate`, `idPlayerLol`, `nickname`, `leagueName`, `leaguePoint`, `leagueTier`, `leagueDivision`, `miniSerieProgress`) VALUES
+(217, 3, 0, 1462031674, 27622126, '', '', '', '', '', ''),
+(218, 6, 0, 1462031674, 52543274, '', '', '', '', '', ''),
+(219, 7, 0, 1462031674, 28960383, '', '', '', '', '', ''),
+(220, 8, 0, 1462031674, 38640997, '', '', '', '', '', ''),
+(221, 9, 1, 1462031967, 19547616, 'FragritÃ´', 'Swain''s Swarm', '57', 'GOLD', 'IV', ''),
+(222, 1, 1, 1462032155, 19441329, 'Pipiroo', 'Renekton''s Ritualists', '57', 'PLATINUM', 'V', ''),
+(223, 2, 1, 1462032155, 125302, 'Xanion', 'Nunu''s Outriders', '13', 'GOLD', 'V', ''),
+(224, 4, 0, 1462032155, 23656419, '', '', '', '', '', ''),
+(225, 5, 1, 1462032155, 31757024, 'ImmaFruitDealer', 'Cho''Gath''s Overlords', '100', 'PLATINUM', 'I', 'NNNNN');
 
 -- --------------------------------------------------------
 
@@ -63,22 +100,22 @@ CREATE TABLE IF NOT EXISTS `players` (
   `idLol` bigint(20) NOT NULL,
   `actif` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
 
 --
 -- Contenu de la table `players`
 --
 
 INSERT INTO `players` (`id`, `name`, `idLol`, `actif`) VALUES
-(1, 'Pipiro', 19441329, 1),
+(1, 'Pipiroo', 19441329, 1),
 (2, 'Xanion', 125302, 1),
-(3, 'Stax', 27622126, 1),
-(4, 'Dodo', 23656419, 1),
-(5, 'Fruit', 31757024, 1),
-(6, 'Guigui', 52543274, 1),
-(7, 'Smurf Xanion', 28960383, 1),
-(8, 'Smurf Pipiro', 38640997, 1),
-(9, 'Foufoune', 19547616, 1);
+(3, 'Staxboy Q', 27622126, 1),
+(4, 'IG Dodo', 23656419, 1),
+(5, 'ImmaFruitDealer', 31757024, 1),
+(6, 'Armageddon42', 52543274, 1),
+(7, 'Crypto Xanion', 28960383, 1),
+(8, 'Le Bronz&eacute', 38640997, 1),
+(9, 'FragritÃ´', 19547616, 1);
 
 -- --------------------------------------------------------
 
@@ -93,7 +130,7 @@ CREATE TABLE IF NOT EXISTS `playerstoteam` (
   PRIMARY KEY (`id`),
   KEY `idTeamIndex` (`idTeam`),
   KEY `idPlayerIndex` (`idPlayer`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
 
 --
 -- Contenu de la table `playerstoteam`
@@ -109,7 +146,7 @@ INSERT INTO `playerstoteam` (`id`, `idPlayer`, `idTeam`) VALUES
 (7, 2, 2),
 (8, 3, 2),
 (9, 4, 2),
-(10, 5, 2);
+(12, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -136,11 +173,17 @@ INSERT INTO `teams` (`id`, `name`) VALUES
 --
 
 --
+-- Contraintes pour la table `cacheplayers`
+--
+ALTER TABLE `cacheplayers`
+  ADD CONSTRAINT `constraintIdPlayer` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`);
+
+--
 -- Contraintes pour la table `playerstoteam`
 --
 ALTER TABLE `playerstoteam`
-  ADD CONSTRAINT `idTeamConstraint` FOREIGN KEY (`idTeam`) REFERENCES `teams` (`id`),
-  ADD CONSTRAINT `idPlayerConstraint` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`);
+  ADD CONSTRAINT `idPlayerConstraint` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`),
+  ADD CONSTRAINT `idTeamConstraint` FOREIGN KEY (`idTeam`) REFERENCES `teams` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

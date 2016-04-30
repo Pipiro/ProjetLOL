@@ -19,3 +19,5 @@ liens :
 - https://openclassrooms.com/courses/prenez-en-main-bootstrap/elements-de-base (tuto bootstrap)
 - http://pausecafe.fdev-creation.com/jquery-ajax-rechargement-dune-partie-dune-page/ (test ajax)
 - https://openclassrooms.com/forum/sujet/code-ajax-qui-reload-une-div-toute-les-1-secondes (ajax toutes les X secondes)
+http://blackrockdigital.github.io/startbootstrap-sb-admin-2/pages/index.html
+http://charliepark.org/bootstrap_buttons/ (générer bouton)
