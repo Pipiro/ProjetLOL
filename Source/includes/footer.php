@@ -54,7 +54,7 @@
     </script>
 
 
-<div class="row marketing" style="margin-left: 1px; margin-top: -15px;">
+<div style="width:1200px; margin-top: -10px;">
   <?php if ($numberKeyAvailable == 7)  { ?>
     <button id="button_key" class="btn btn-success">Clées disponibles <span class="badge text-success" id="number_keys_available"><?php echo $numberKeyAvailable; ?></span></button>
   <?php } else if ($numberKeyAvailable > 3) { ?>
@@ -62,5 +62,5 @@
   <?php } else  { ?>
     <button id="button_key" class="btn btn-danger">Clées disponibles <span class="badge text-success" id="number_keys_available"><?php echo $numberKeyAvailable; ?></span></button>
   <?php } ?>
-  <div class='btn btn-info' style='float: right; margin-right: -44px;'><i class='fa fa-cogs' aria-hidden='true'></i> Version 6.8 </div>
+  <div class='btn btn-info' style='float: right;'><i class='fa fa-cogs' aria-hidden='true'></i> Version 6.8 </div>
 </div>  

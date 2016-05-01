@@ -27,6 +27,6 @@ if (!isset($activeTab))header('Location: ../index.php');
            </form>
       </li>
       </ul>
-      <a href="index.php" style="text-decoration:none;"><h3 class="text-muted">League Of Legends Stats Beta</h3></a>
+      <a href="index.php" style="text-decoration:none;"><h3 class="text-muted">League Of Legends Stats <img src="images/Beta.png"></img></h3></a>
 </div>
 <br />
