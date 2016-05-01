@@ -21,6 +21,10 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet" type="text/css" />
 
+    <!-- Icones animés -->
+    <link rel="stylesheet" href="css/font-awesome-animation.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+
     <script type="text/javascript" src="jquery/jquery-2.0.3.js"></script>
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
