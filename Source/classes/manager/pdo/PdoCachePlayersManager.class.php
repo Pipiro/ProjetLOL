@@ -37,16 +37,17 @@ class PdoCachePlayersManager extends AbstractPdoManager
 		// Suppression de l'ancien cache pour le joueur
 		if ($this->getCachePlayerByIdPlayerAndTimeLimit($idPlayer, 0) != null)
 		{
-			$query = $this->pdo->prepare("DELETE FROM cacheplayers WHERE idPlayer='$idPlayer'");
+			$query = $this->pdo->prepare("UPDATE cacheplayers SET updateDate = '".time()."', nickname = '".$nickname."', leagueName = '".$leagueName."', leaguePoint = '".$leaguePoint."', leagueTier = '".$leagueTier."', leagueDivision = '".$leagueDivision."', miniSerieProgress = '".$miniSerieProgress."' WHERE idPlayer='".$idPlayer."'");
 			
 			$resultat=$query->execute();
 		}
-
-		$query = $this->pdo->prepare("INSERT INTO cacheplayers(idPlayer, isRanked, updateDate, idPlayerLol, nickname, leagueName, leaguePoint, leagueTier, leagueDivision, miniSerieProgress)
-			VALUES ('".$idPlayer."', '".$isRanked."', '".$updateDate."', '".$idPlayerLol."', '".$nickname."','".$leagueName."','".$leaguePoint."','".$leagueTier."','".$leagueDivision."','".$miniSerieProgress."')");
-		
-
-		$resultat=$query->execute();
+		else
+		{
+			$query = $this->pdo->prepare("INSERT INTO cacheplayers(idPlayer, isRanked, updateDate, idPlayerLol, nickname, leagueName, leaguePoint, leagueTier, leagueDivision, miniSerieProgress)
+				VALUES ('".$idPlayer."', '".$isRanked."', '".$updateDate."', '".$idPlayerLol."', '".$nickname."','".$leagueName."','".$leaguePoint."','".$leagueTier."','".$leagueDivision."','".$miniSerieProgress."')");
+			
+			$resultat=$query->execute();
+		}
 	}
 	
 	

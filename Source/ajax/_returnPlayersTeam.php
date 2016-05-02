@@ -19,8 +19,6 @@
     $am = new PdoApiKeyManager();
     $playersStats = null;
     $playerGame = null;
-    $playerArrayId = null;
-    $playerArrayIdLol = null;
     $errorMessage = "";
 
     foreach($players as $player)
@@ -51,7 +49,7 @@
 
       // Récupération des données de la game en cours
       // Vérification que l'api ne renvoie pas de messages d'erreurs
-      $resultCurrentGamePlayer = $am->getPlayerInGame($player->getId()) ;
+      $resultCurrentGamePlayer = $am->getPlayerInGame($player->getIdLol()) ;
       if (is_string($resultCurrentGamePlayer))
       {
         $errorMessage = $resultCurrentGamePlayer;

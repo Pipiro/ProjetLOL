@@ -52,7 +52,7 @@
       
       <?php include("includes/header.php"); ?>
 
-      <div class="jumbotron" style="width:1200px;height:800px;">
+      <div class="jumbotron" style="width:1200px;">
         <div id="affichage">
 
          <center><img src="images/LeagueOfLegendsLogo.png"></center>
