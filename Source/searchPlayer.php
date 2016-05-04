@@ -93,7 +93,7 @@
                     <div id="champRecherche">
                       <div id="imageRecherche">
                           <?php if (!isset($currentGamePlayer->status)) { // Vérification si le joueur est en jeu ?>
-                            <a class='btn btn-info' style="margin-top: 350px;" href='#'><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</a>
+                            <div class='btn btn-info' style="margin-left: -85px; margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
                           <?php } ?>
                       </div>
 
@@ -155,8 +155,11 @@
           <!-- Le joueur n'est pas classé -->
           <?php if ($ranked == false) { ?>
               <div id="champRecherche">
-                  <div id="imageRecherche"></div>
-
+                  <div id="imageRecherche">
+                    <?php if (!isset($currentGamePlayer->status)) { // Vérification si le joueur est en jeu ?>
+                        <div class='btn btn-info' style="margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
+                    <?php } ?>
+                  </div>
                       <?php echo "<a href='statsPlayer.php?id=" . reset($playerProp)->id . "&season=2016'>" . "<br /><b>" . $_GET['pseudo'] . "</b></a>"?>
 
                       <br />

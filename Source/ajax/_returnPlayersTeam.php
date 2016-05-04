@@ -113,7 +113,7 @@
                   <?php } ?>
 
                   <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
-                       <div class='btn btn-info' style="margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
+                       <div class='btn btn-info' style="margin-left: -85px; margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
                   <?php } ?>
 
                 </div>
@@ -162,7 +162,7 @@
                       <?php } ?>
 
                       <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
-                        <div class='btn btn-info' style="margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
+                        <div class='btn btn-info' style="margin-left: -85px; margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
                       <?php } ?>
 
                     </div>
@@ -198,7 +198,7 @@
                       <?php } ?>
 
                       <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
-                        <div class='btn btn-info' style="margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
+                        <div class='btn btn-info' style="margin-left: -85px; margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
                       <?php } ?>
 
                     </div>
@@ -259,7 +259,7 @@
                       <?php } ?>
 
                       <?php if (!isset($playerGame[$playerName]->status)) { // Vérification si le joueur est en jeu ?>
-                        <div class='btn btn-info' style="margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
+                        <div class='btn btn-info' style="margin-left: -85px; margin-top: 350px;"><i class='fa fa-bell faa-ring animated' aria-hidden='true'></i> En Jeu</div>
                       <?php } ?>
 
                     </div>
