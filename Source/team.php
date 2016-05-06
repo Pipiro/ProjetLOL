@@ -79,7 +79,7 @@
 
       <div class="jumbotron" style="width:1200px;height:800px;">
 
-        <form action='statsPlayer.php' method='post'>
+        <form action='team.php' method='post'>
                   <select onchange="getPlayersTeam(this.value)">
                     <?php foreach($teams as $team): ?>
                       <?php echo "<option value='".$team->getId()."'>".$team->getName()."</option>"; ?>

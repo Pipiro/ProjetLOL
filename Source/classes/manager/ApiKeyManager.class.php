@@ -15,6 +15,7 @@ interface ApiKeyManager
 	function getChamps();
 	function getStatsSummaryByIdPlayer($id, $season);
 	function getMatchListByIdPlayerAndSeasonAndMode($id, $season, $mode);
+	function getRecentGamesByIdPlayer($id);
 	function getPlayerByName($name);
 	function getPlayerById($id);
 	function getPlayerInGame($id);

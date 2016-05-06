@@ -257,6 +257,20 @@ class PdoApiKeyManager extends AbstractPdoManager
         
 	}
 
+	public function getRecentGamesByIdPlayer($id)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchMatchs = self::APIURL . "/euw/v1.3/game/by-summoner/" . $id . "/recent?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchMatchs);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+	}
+
 	function getPlayerByName($name)
 	{
 		$keyAPI = $this->getKeyByUse();

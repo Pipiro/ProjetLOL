@@ -6,9 +6,9 @@ if (!isset($activeTab))header('Location: ../index.php');
 <div class="header">
     <ul class="nav nav-pills pull-right">
       <?php if ($activeTab == "index") { ?>
-      <li class="active"><a href="index.php">Mes joueurs</a></li>
+      <li class="active"><a href="index.php">Admin</a></li>
       <?php } else { ?>
-      <li><a href="index.php">Mes joueurs</a></li>
+      <li><a href="index.php">Admin</a></li>
       <?php } ?>
       <?php if ($activeTab == "team") { ?>
       <li class="active"><a href="team.php">Team</a></li>
