@@ -28,11 +28,12 @@
     foreach ($recentGames->games as $recentGame) {
       if ($recentGame->gameMode == "CLASSIC" && $recentGame->subType == "NORMAL")
       {
+        $match = $am->getMatchById($recentGame->gameId);
+        var_dump($match->participantIdentities); die;
         $arrayKeysGame = null;
         echo "MATCH ".$recentGame->gameId." ";
-        //var_dump(substr($recentGame->createDate, 0, -3)); die;
-        echo 'Le '.date('d/m/Y', substr($recentGame->createDate, 0, -3)).' &agrave; '.date('H:i:s', substr($recentGame->createDate, 0, -3))."<br />";
-        //var_dump($recentGame->fellowPlayers); die;
+        echo 'Le '.date('d/m/Y', substr($match->matchCreation, 0, -3)).' &agrave; '.date('H:i:s', substr($match->matchCreation, 0, -3))."<br />";
+        echo "Durée : ".(round($match->matchDuration/60))." minutes<br />";
         foreach ($recentGame->fellowPlayers as $fellowPlayer) 
         {
           if ($fellowPlayer->teamId == $recentGame->teamId)
@@ -55,9 +56,6 @@
           }
         }
         echo "<br /><br />";
-        //var_dump($arrayKeysTeam);
-        //var_dump($arrayKeysGame);
-        //var_dump(array_diff($arrayKeysTeam, $arrayKeysGame));
       }
     }
 

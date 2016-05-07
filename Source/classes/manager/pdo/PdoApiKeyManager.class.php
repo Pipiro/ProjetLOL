@@ -271,6 +271,20 @@ class PdoApiKeyManager extends AbstractPdoManager
 	    }
 	}
 
+	public function getMatchById($id)
+	{
+		$keyAPI = $this->getKeyByUse();
+		if ($keyAPI != null)
+		{
+			$searchMatch = self::APIURL . "/euw/v2.2/match/" . $id . "?api_key=" . $keyAPI->getValue();
+	        return $this->getResultsApi($searchMatch);
+	    }
+	    else
+	    {
+	    	return "Acune clé de disponible pour accéder à l'API, veuillez réessayer ultérieurement";
+	    }
+	}
+
 	function getPlayerByName($name)
 	{
 		$keyAPI = $this->getKeyByUse();
