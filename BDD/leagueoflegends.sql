@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.12deb2+deb8u1
+-- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Client :  localhost
--- Généré le :  Lun 02 Mai 2016 à 19:16
--- Version du serveur :  5.5.47-0+deb8u1
--- Version de PHP :  5.6.19-0+deb8u1
+-- Client :  127.0.0.1
+-- Généré le :  Sam 08 Avril 2017 à 00:22
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -27,24 +27,25 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `apikey` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   `timestamp10s` int(20) NOT NULL DEFAULT '0',
   `number10s` int(11) NOT NULL DEFAULT '0',
   `timestamp10m` int(11) NOT NULL DEFAULT '0',
   `number10m` int(11) NOT NULL DEFAULT '0',
-  `actif` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+  `actif` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 --
 -- Contenu de la table `apikey`
 --
 
 INSERT INTO `apikey` (`id`, `name`, `value`, `timestamp10s`, `number10s`, `timestamp10m`, `number10m`, `actif`) VALUES
-(1, 'Pipiro', '720315b6-0816-4222-b740-291bc1ae4af9', 1462191727, 9, 1462191727, 206, 1),
-(2, 'Pipirox', 'afd770fb-cab4-42cc-b917-4a92a8d90c53', 1462191672, 10, 1462191672, 46, 1),
-(3, 'Kaaakaaapipi', '30887bc8-0c93-4867-be51-435e72dbec16', 1462030390, 5, 1462030390, 5, 1),
+(1, 'Pipiro', '720315b6-0816-4222-b740-291bc1ae4af9', 1491329310, 6, 1491329310, 452, 1),
+(2, 'Pipirox', 'afd770fb-cab4-42cc-b917-4a92a8d90c53', 1491329093, 10, 1491329093, 24, 1),
+(3, 'Kaaakaaapipi', '30887bc8-0c93-4867-be51-435e72dbec16', 1491329093, 1, 1491329093, 1, 1),
 (5, 'Kaakaapipi', '76496b37-61f0-4d1a-93a5-5ed8371003a7', 1461951034, 10, 1461951034, 10, 1),
 (6, 'Xanion', '8fc9f52a-1340-4d22-9268-c5da61403230', 1461951034, 4, 1461951034, 4, 1),
 (7, 'Stax', '9cd23d6a-5cf2-411d-9142-8f983997c8fa', 1461747786, 1, 1461747786, 7, 1),
@@ -57,7 +58,7 @@ INSERT INTO `apikey` (`id`, `name`, `value`, `timestamp10s`, `number10s`, `times
 --
 
 CREATE TABLE IF NOT EXISTS `cacheplayers` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPlayer` int(11) NOT NULL,
   `isRanked` int(11) NOT NULL,
   `updateDate` bigint(20) NOT NULL,
@@ -67,28 +68,31 @@ CREATE TABLE IF NOT EXISTS `cacheplayers` (
   `leaguePoint` varchar(255) DEFAULT NULL,
   `leagueTier` varchar(255) DEFAULT NULL,
   `leagueDivision` varchar(255) DEFAULT NULL,
-  `miniSerieProgress` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=388 DEFAULT CHARSET=latin1;
+  `miniSerieProgress` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idPlayer` (`idPlayer`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=389 ;
 
 --
 -- Contenu de la table `cacheplayers`
 --
 
 INSERT INTO `cacheplayers` (`id`, `idPlayer`, `isRanked`, `updateDate`, `idPlayerLol`, `nickname`, `leagueName`, `leaguePoint`, `leagueTier`, `leagueDivision`, `miniSerieProgress`) VALUES
-(369, 1, 1, 1462190725, 19441329, 'Pipiroo', 'Renekton''s Ritualists', '57', 'PLATINUM', 'V', ''),
-(370, 2, 1, 1462190725, 125302, 'Xanion', 'Nunu''s Outriders', '13', 'GOLD', 'V', ''),
-(372, 4, 0, 1462190725, 23656419, '', '', '', '', '', ''),
-(373, 5, 1, 1462190725, 31757024, 'ImmaFruitDealer', 'Cho''Gath''s Overlords', '100', 'PLATINUM', 'I', 'NNNNN'),
-(378, 13, 1, 1462191385, 82746988, 'TEAM24SEVEN', 'Zyra''s Infiltrators', '1350', 'CHALLENGER', 'I', ''),
-(379, 14, 1, 1462191385, 19474104, 'iSatorius', 'Zyra''s Infiltrators', '1192', 'CHALLENGER', 'I', ''),
-(380, 15, 1, 1462191385, 21999355, 'Exileh', 'Zyra''s Infiltrators', '1152', 'CHALLENGER', 'I', ''),
-(381, 16, 1, 1462191385, 71347673, 'NoXlAK', 'Zyra''s Infiltrators', '1133', 'CHALLENGER', 'I', ''),
-(382, 17, 1, 1462191385, 76406887, 'Gilius 1v9', 'Zyra''s Infiltrators', '1051', 'CHALLENGER', 'I', ''),
-(383, 3, 0, 1462191622, 27622126, '', '', '', '', '', ''),
-(384, 6, 0, 1462191622, 52543274, '', '', '', '', '', ''),
-(385, 7, 0, 1462191622, 28960383, '', '', '', '', '', ''),
-(386, 8, 0, 1462191622, 38640997, '', '', '', '', '', ''),
-(387, 9, 1, 1462191622, 19547616, 'FragritÃ´', 'Swain''s Swarm', '57', 'GOLD', 'IV', '');
+(369, 1, 1, 1491324279, 19441329, 'Pipiroo', 'Hecarim''s Brutes', '29', 'GOLD', 'III', ''),
+(370, 2, 1, 1491324279, 125302, 'Xanion', 'Nunu''s Patriots', '0', 'SILVER', 'I', ''),
+(372, 4, 0, 1491323640, 23656419, 'IG Dodo', 'Hecarim''s Brutes', '51', 'GOLD', 'IV', ''),
+(373, 5, 1, 1491323640, 31757024, 'ImmaFruitDealer', 'Wukong''s Swashbucklers', '0', 'DIAMOND', 'IV', ''),
+(378, 13, 1, 1462216433, 82746988, 'TEAM24SEVEN', 'Zyra''s Infiltrators', '1350', 'CHALLENGER', 'I', ''),
+(379, 14, 1, 1462216433, 19474104, 'iSatorius', 'Zyra''s Infiltrators', '1206', 'CHALLENGER', 'I', ''),
+(380, 15, 1, 1462216433, 21999355, 'Exileh', 'Zyra''s Infiltrators', '1153', 'CHALLENGER', 'I', ''),
+(381, 16, 1, 1462216433, 71347673, 'NoXlAK', 'Zyra''s Infiltrators', '1148', 'CHALLENGER', 'I', ''),
+(382, 17, 1, 1462216433, 76406887, 'Gilius 1v9', 'Zyra''s Infiltrators', '1051', 'CHALLENGER', 'I', ''),
+(383, 3, 0, 1491324279, 27622126, 'Staxboy Q', 'Nunu''s Patriots', '0', 'SILVER', 'III', ''),
+(384, 6, 0, 1491323527, 52543274, '', '', '', '', '', ''),
+(385, 7, 0, 1491323527, 28960383, '', '', '', '', '', ''),
+(386, 8, 0, 1491323527, 38640997, 'OTP Master Yi', 'Xerath''s Executioners', '78', 'BRONZE', 'I', ''),
+(387, 9, 1, 1491323527, 19547616, 'FragritÃ´', 'Nocturne''s Legion', '23', 'SILVER', 'IV', ''),
+(388, 19, 1, 1491324279, 27459857, 'Takenow', 'Maokai''s Fists', '75', 'PLATINUM', 'II', '');
 
 -- --------------------------------------------------------
 
@@ -97,12 +101,13 @@ INSERT INTO `cacheplayers` (`id`, `idPlayer`, `isRanked`, `updateDate`, `idPlaye
 --
 
 CREATE TABLE IF NOT EXISTS `players` (
-`id` int(255) NOT NULL,
+  `id` int(255) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_roman_ci NOT NULL,
   `role` int(11) DEFAULT NULL,
   `idLol` bigint(20) NOT NULL,
-  `actif` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+  `actif` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
 
 --
 -- Contenu de la table `players`
@@ -125,7 +130,8 @@ INSERT INTO `players` (`id`, `name`, `role`, `idLol`, `actif`) VALUES
 (15, 'Exileh', NULL, 21999355, 1),
 (16, 'NoXlAK', NULL, 71347673, 1),
 (17, 'Gilius 1v9', NULL, 76406887, 1),
-(18, 'Carryzer', NULL, 71031429, 0);
+(18, 'Carryzer', NULL, 71031429, 0),
+(19, 'Takenow', NULL, 27459857, 1);
 
 -- --------------------------------------------------------
 
@@ -134,21 +140,19 @@ INSERT INTO `players` (`id`, `name`, `role`, `idLol`, `actif`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `playerstoteam` (
-`id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idPlayer` int(11) NOT NULL,
-  `idTeam` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=latin1;
+  `idTeam` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idTeamIndex` (`idTeam`),
+  KEY `idPlayerIndex` (`idPlayer`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 --
 -- Contenu de la table `playerstoteam`
 --
 
 INSERT INTO `playerstoteam` (`id`, `idPlayer`, `idTeam`) VALUES
-(1, 3, 1),
-(2, 6, 1),
-(3, 7, 1),
-(4, 8, 1),
-(5, 9, 1),
 (6, 1, 2),
 (7, 2, 2),
 (8, 3, 2),
@@ -159,7 +163,11 @@ INSERT INTO `playerstoteam` (`id`, `idPlayer`, `idTeam`) VALUES
 (15, 15, 3),
 (16, 16, 3),
 (17, 17, 3),
-(18, 18, 3);
+(18, 18, 3),
+(19, 1, 1),
+(20, 2, 1),
+(21, 3, 1),
+(22, 19, 1);
 
 -- --------------------------------------------------------
 
@@ -168,9 +176,10 @@ INSERT INTO `playerstoteam` (`id`, `idPlayer`, `idTeam`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `teams` (
-`id` int(11) NOT NULL,
-  `name` varchar(255) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Contenu de la table `teams`
@@ -182,69 +191,6 @@ INSERT INTO `teams` (`id`, `name`) VALUES
 (3, 'Pros');
 
 --
--- Index pour les tables exportées
---
-
---
--- Index pour la table `apikey`
---
-ALTER TABLE `apikey`
- ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `cacheplayers`
---
-ALTER TABLE `cacheplayers`
- ADD PRIMARY KEY (`id`), ADD KEY `idPlayer` (`idPlayer`);
-
---
--- Index pour la table `players`
---
-ALTER TABLE `players`
- ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `playerstoteam`
---
-ALTER TABLE `playerstoteam`
- ADD PRIMARY KEY (`id`), ADD KEY `idTeamIndex` (`idTeam`), ADD KEY `idPlayerIndex` (`idPlayer`);
-
---
--- Index pour la table `teams`
---
-ALTER TABLE `teams`
- ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT pour les tables exportées
---
-
---
--- AUTO_INCREMENT pour la table `apikey`
---
-ALTER TABLE `apikey`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT pour la table `cacheplayers`
---
-ALTER TABLE `cacheplayers`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=388;
---
--- AUTO_INCREMENT pour la table `players`
---
-ALTER TABLE `players`
-MODIFY `id` int(255) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
---
--- AUTO_INCREMENT pour la table `playerstoteam`
---
-ALTER TABLE `playerstoteam`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
---
--- AUTO_INCREMENT pour la table `teams`
---
-ALTER TABLE `teams`
-MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
---
 -- Contraintes pour les tables exportées
 --
 
@@ -252,14 +198,14 @@ MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 -- Contraintes pour la table `cacheplayers`
 --
 ALTER TABLE `cacheplayers`
-ADD CONSTRAINT `constraintIdPlayer` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`);
+  ADD CONSTRAINT `constraintIdPlayer` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`);
 
 --
 -- Contraintes pour la table `playerstoteam`
 --
 ALTER TABLE `playerstoteam`
-ADD CONSTRAINT `idPlayerConstraint` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`),
-ADD CONSTRAINT `idTeamConstraint` FOREIGN KEY (`idTeam`) REFERENCES `teams` (`id`);
+  ADD CONSTRAINT `idPlayerConstraint` FOREIGN KEY (`idPlayer`) REFERENCES `players` (`id`),
+  ADD CONSTRAINT `idTeamConstraint` FOREIGN KEY (`idTeam`) REFERENCES `teams` (`id`);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

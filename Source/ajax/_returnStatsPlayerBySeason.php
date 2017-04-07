@@ -38,6 +38,40 @@
                 $statsRankedTeam = true;
             }
           }
+          else if ($_GET['mode'] == "RANKED_FLEX_5V5" || $_GET['mode'] == "TOUS")
+          { 
+            if ($statsMode->playerStatSummaryType == "RankedSolo5x5")
+            {
+              if (!$_GET['mode'] == "TOUS")
+              {
+                $totalLosses = 0 - $totalLosses;
+                $totalWin =  0 - $totalWin;
+              }
+              else
+              {
+                $totalLosses = 0;
+                $totalWin = 0;
+              }
+            }
+            else if ($statsMode->playerStatSummaryType == "RankedFlexSR")
+            {
+              var_dump($totalLosses);
+              var_dump($totalWin);
+              foreach($statsJoueurRanked->champions as $champPlayer)
+              {
+                  if ($champPlayer->id == 0) 
+                  {
+                    $totalLosses = $totalLosses + $champPlayer->stats->totalSessionsLost;
+                    $totalWin = $totalWin + ($champPlayer->stats->totalSessionsPlayed - $champPlayer->stats->totalSessionsLost);
+                  } 
+              } 
+
+              if ($totalLosses != 0 || $totalWin != 0)
+              {
+                  $statsRankedTeam = true;
+              }
+            }
+          }
         }
 
         $totalGame = $totalWin + $totalLosses;
@@ -47,7 +81,7 @@
                
         <?php
         //on ne doit pas remplir la gauge s il ny a pas de donnees
-        if (($_GET['mode'] == "RANKED_SOLO" && $statsRankedSolo == false) || ($_GET['mode'] == "RANKED_TEAM_5V5" && $statsRankedTeam == false) || ($_GET['mode'] == "TOUS" && $statsRankedSolo == false && $statsRankedTeam == false))
+        if (($_GET['mode'] == "RANKED_SOLO" && $statsRankedSolo == false) || ($_GET['mode'] == "RANKED_TEAM_5V5" && $statsRankedTeam == false) || ($_GET['mode'] == "RANKED_FLEX_5V5" && $statsRankedTeam == false) || ($_GET['mode'] == "TOUS" && $statsRankedSolo == false && $statsRankedTeam == false))
         {
             $showStats = false;
         }
@@ -59,10 +93,16 @@
                 <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $_GET['season']; ?> en mode Ranked Solo.
             </div>
         <?php }
-        if (($_GET['mode'] == "RANKED_TEAM_5V5" || $_GET['mode'] == "TOUS") && $statsRankedTeam == false && $_GET['season'] != 2016)
+        if (($_GET['mode'] == "RANKED_TEAM_5V5" || $_GET['mode'] == "TOUS") && $statsRankedTeam == false && $_GET['season'] != 2016 && $_GET['season'] != 2017)
         { ?>
             <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
                 <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $_GET['season']; ?> en mode Ranked Team 5v5.
+            </div>
+        <?php }
+        if (($_GET['mode'] == "RANKED_FLEX_5V5" || $_GET['mode'] == "TOUS") && $statsRankedTeam == false && $_GET['season'] == 2017)
+        { ?>
+            <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
+                <strong>Ho non!</strong> Pas de données disponible pour la saison <?php echo $_GET['season']; ?> en mode Ranked Flex 5v5.
             </div>
         <?php }
 
@@ -202,6 +242,7 @@
                 if ($_GET['mode']=="TOUS")$modeModif="RANKED_SOLO_5x5,RANKED_TEAM_5x5";
                 if ($_GET['mode']=="RANKED_SOLO")$modeModif="RANKED_SOLO_5x5";
                 if ($_GET['mode']=="RANKED_TEAM_5V5")$modeModif="RANKED_TEAM_5x5";
+                if ($_GET['mode']=="RANKED_FLEX_5V5")$modeModif="RANKED_FLEX_5x5";
 
                 //requete api
                 $matchList = $am->getMatchListByIdPlayerAndSeasonAndMode($_GET['idJoueur'],$_GET['season'],$modeModif);
